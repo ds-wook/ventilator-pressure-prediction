@@ -1,8 +1,9 @@
 import hydra
-from data.dataset import load_dataset
 from hydra.utils import to_absolute_path
-from model.gbdt import train_group_kfold_lightgbm
 from omegaconf import DictConfig
+
+from data.dataset import load_dataset
+from model.gbdt import train_group_kfold_lightgbm
 from utils.utils import timer
 
 
@@ -19,7 +20,6 @@ def _main(cfg: DictConfig):
         X_test = test.drop(["breath_id"], axis=1)
         group = train["breath_id"]
 
-        
         lgb_preds = train_group_kfold_lightgbm(
             cfg.model.fold,
             X,
