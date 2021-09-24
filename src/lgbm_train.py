@@ -1,4 +1,5 @@
 import hydra
+import pandas as pd
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig
 
@@ -11,29 +12,25 @@ from utils.utils import timer
 def _main(cfg: DictConfig):
     path = to_absolute_path(cfg.dataset.path) + "/"
 
+    train = pd.read_csv(path + cfg.dataset.train)
+    submission = pd.read_csv(path + cfg.dataset.submit)
+    group = train["breath_id"]
+    train_x, train_y, test_x = load_dataset(path)
     with timer("LightGBM Learning"):
-        train, test = load_dataset(path)
-
-        # Split features and target
-        X = train.drop(["breath_id", "pressure"], axis=1)
-        y = train["pressure"]
-        X_test = test.drop(["breath_id"], axis=1)
-        group = train["breath_id"]
-
         lgb_preds = train_group_kfold_lightgbm(
             cfg.model.fold,
-            X,
-            y,
-            X_test,
+            train_x,
+            train_y,
+            test_x,
             group,
             dict(cfg.params),
             cfg.model.verbose,
         )
 
         # Save test predictions
-        test["pressure"] = lgb_preds
+        submission["pressure"] = lgb_preds
         submit_path = to_absolute_path(cfg.submit.path) + "/"
-        test[["id", "pressure"]].to_csv(submit_path + cfg.submit.name, index=False)
+        submission.to_csv(submit_path + cfg.submit.name, index=False)
 
 
 if __name__ == "__main__":

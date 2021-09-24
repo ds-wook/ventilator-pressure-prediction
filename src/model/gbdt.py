@@ -7,7 +7,7 @@ import pandas as pd
 from lightgbm import LGBMRegressor
 from neptune.new.integrations.lightgbm import NeptuneCallback, create_booster_summary
 from sklearn.metrics import mean_absolute_error
-from sklearn.model_selection import GroupKFold
+from model.model_selection import ShufflableGroupKFold
 
 warnings.filterwarnings("ignore")
 
@@ -22,7 +22,7 @@ def train_group_kfold_lightgbm(
     verbose: Union[int, bool] = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
 
-    kf = GroupKFold(n_splits=n_fold)
+    kf = ShufflableGroupKFold(n_splits=n_fold, random_state=42, shuffle=True)
     splits = kf.split(X, y, groups)
     lgb_oof = np.zeros(X.shape[0])
     lgb_preds = np.zeros(X_test.shape[0])
@@ -44,8 +44,8 @@ def train_group_kfold_lightgbm(
             X_train,
             y_train,
             eval_set=[(X_train, y_train), (X_valid, y_valid)],
-            early_stopping_rounds=50,
-            eval_metric="l2",
+            early_stopping_rounds=100,
+            eval_metric="mae",
             verbose=verbose,
             callbacks=[neptune_callback],
         )
