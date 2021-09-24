@@ -7,9 +7,7 @@ import pandas as pd
 from lightgbm import LGBMRegressor
 from neptune.new.integrations.lightgbm import NeptuneCallback, create_booster_summary
 from sklearn.metrics import mean_absolute_error
-
-from model.model_selection import ShufflableGroupKFold
-from utils.utils import timer
+from sklearn.model_selection import GroupKFold
 
 warnings.filterwarnings("ignore")
 
@@ -24,7 +22,7 @@ def train_group_kfold_lightgbm(
     verbose: Union[int, bool] = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
 
-    kf = ShufflableGroupKFold(n_splits=n_fold, random_state=42, shuffle=True)
+    kf = GroupKFold(n_splits=n_fold)
     splits = kf.split(X, y, groups)
     lgb_oof = np.zeros(X.shape[0])
     lgb_preds = np.zeros(X_test.shape[0])
@@ -34,33 +32,32 @@ def train_group_kfold_lightgbm(
     )
 
     for fold, (train_idx, valid_idx) in enumerate(splits, 1):
+        print(f"Fold-{fold} Start!")
         neptune_callback = NeptuneCallback(run=run, base_namespace=f"fold_{fold}")
         # create dataset
         X_train, y_train = X.iloc[train_idx], y.iloc[train_idx]
         X_valid, y_valid = X.iloc[valid_idx], y.iloc[valid_idx]
-        with timer(f"Fold-{fold} Start"):
-            # model
-            model = LGBMRegressor(**params)
-            model.fit(
-                X_train,
-                y_train,
-                eval_set=[(X_train, y_train), (X_valid, y_valid)],
-                early_stopping_rounds=100,
-                eval_metric="mae",
-                categorical_feature=["R", "C"],
-                verbose=verbose,
-                callbacks=[neptune_callback],
-            )
+
+        # model
+        model = LGBMRegressor(**params)
+        model.fit(
+            X_train,
+            y_train,
+            eval_set=[(X_train, y_train), (X_valid, y_valid)],
+            early_stopping_rounds=25,
+            eval_metric="mae",
+            verbose=verbose,
+            callbacks=[neptune_callback],
+        )
         # validation
-        lgb_oof[valid_idx] = model.predict(X_valid, num_iteration=model.best_iteration_)
-        lgb_preds += model.predict(X_test, num_iteration=model.best_iteration_) / n_fold
+        lgb_oof[valid_idx] = model.predict(X_valid)
+        lgb_preds += model.predict(X_test) / n_fold
 
         # Log summary metadata to the same run under the "lgbm_summary" namespace
         run[f"lgbm_summary/fold_{fold}"] = create_booster_summary(
             booster=model,
             log_trees=True,
             list_trees=[0, 1, 2, 3, 4],
-            max_num_features=20,
             y_pred=lgb_oof[valid_idx],
             y_true=y_valid,
         )

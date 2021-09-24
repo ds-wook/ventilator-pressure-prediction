@@ -195,6 +195,101 @@ def preprocess(
 def load_dataset(path: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
     train = pd.read_csv(path + "train.csv")
     test = pd.read_csv(path + "test.csv")
-    train_x, train_y, test_x = preprocess(train, test)
+    train["last_value_u_in"] = train.groupby("breath_id")["u_in"].transform("last")
+    train["u_in_lag1"] = train.groupby("breath_id")["u_in"].shift(1)
+    train["u_out_lag1"] = train.groupby("breath_id")["u_out"].shift(1)
+    train["u_in_lag_back1"] = train.groupby("breath_id")["u_in"].shift(-1)
+    train["u_out_lag_back1"] = train.groupby("breath_id")["u_out"].shift(-1)
+    train["u_in_lag2"] = train.groupby("breath_id")["u_in"].shift(2)
+    train["u_out_lag2"] = train.groupby("breath_id")["u_out"].shift(2)
+    train["u_in_lag_back2"] = train.groupby("breath_id")["u_in"].shift(-2)
+    train["u_out_lag_back2"] = train.groupby("breath_id")["u_out"].shift(-2)
+    train = train.fillna(0)
 
-    return train_x, train_y, test_x
+    train["R__C"] = train["R"].astype(str) + "__" + train["C"].astype(str)
+
+    # max value of u_in and u_out for each breath
+    train["breath_id__u_in__max"] = train.groupby(["breath_id"])["u_in"].transform(
+        "max"
+    )
+    train["breath_id__u_out__max"] = train.groupby(["breath_id"])["u_out"].transform(
+        "max"
+    )
+
+    # difference between consequitive values
+    train["u_in_diff1"] = train["u_in"] - train["u_in_lag1"]
+    train["u_out_diff1"] = train["u_out"] - train["u_out_lag1"]
+    train["u_in_diff2"] = train["u_in"] - train["u_in_lag2"]
+    train["u_out_diff2"] = train["u_out"] - train["u_out_lag2"]
+    # from here: https://www.kaggle.com/yasufuminakama/ventilator-pressure-lstm-starter
+    train.loc[train["time_step"] == 0, "u_in_diff"] = 0
+    train.loc[train["time_step"] == 0, "u_out_diff"] = 0
+
+    # difference between the current value of u_in and the max value within the breath
+    train["breath_id__u_in__diffmax"] = (
+        train.groupby(["breath_id"])["u_in"].transform("max") - train["u_in"]
+    )
+    train["breath_id__u_in__diffmean"] = (
+        train.groupby(["breath_id"])["u_in"].transform("mean") - train["u_in"]
+    )
+
+    # OHE
+    train = train.merge(
+        pd.get_dummies(train["R"], prefix="R"), left_index=True, right_index=True
+    ).drop(["R"], axis=1)
+    train = train.merge(
+        pd.get_dummies(train["C"], prefix="C"), left_index=True, right_index=True
+    ).drop(["C"], axis=1)
+    train = train.merge(
+        pd.get_dummies(train["R__C"], prefix="R__C"), left_index=True, right_index=True
+    ).drop(["R__C"], axis=1)
+
+    train["u_in_cumsum"] = train.groupby(["breath_id"])["u_in"].cumsum()
+    train["time_step_cumsum"] = train.groupby(["breath_id"])["time_step"].cumsum()
+
+    # all the same for the test data
+    test["last_value_u_in"] = test.groupby("breath_id")["u_in"].transform("last")
+    test["u_in_lag1"] = test.groupby("breath_id")["u_in"].shift(1)
+    test["u_out_lag1"] = test.groupby("breath_id")["u_out"].shift(1)
+    test["u_in_lag_back1"] = test.groupby("breath_id")["u_in"].shift(-1)
+    test["u_out_lag_back1"] = test.groupby("breath_id")["u_out"].shift(-1)
+    test["u_in_lag2"] = test.groupby("breath_id")["u_in"].shift(2)
+    test["u_out_lag2"] = test.groupby("breath_id")["u_out"].shift(2)
+    test["u_in_lag_back2"] = test.groupby("breath_id")["u_in"].shift(-2)
+    test["u_out_lag_back2"] = test.groupby("breath_id")["u_out"].shift(-2)
+    test = test.fillna(0)
+    test["R__C"] = test["R"].astype(str) + "__" + test["C"].astype(str)
+
+    test["breath_id__u_in__max"] = test.groupby(["breath_id"])["u_in"].transform("max")
+    test["breath_id__u_out__max"] = test.groupby(["breath_id"])["u_out"].transform(
+        "max"
+    )
+
+    test["u_in_diff1"] = test["u_in"] - test["u_in_lag1"]
+    test["u_out_diff1"] = test["u_out"] - test["u_out_lag1"]
+    test["u_in_diff2"] = test["u_in"] - test["u_in_lag2"]
+    test["u_out_diff2"] = test["u_out"] - test["u_out_lag2"]
+    test.loc[test["time_step"] == 0, "u_in_diff"] = 0
+    test.loc[test["time_step"] == 0, "u_out_diff"] = 0
+
+    test["breath_id__u_in__diffmax"] = (
+        test.groupby(["breath_id"])["u_in"].transform("max") - test["u_in"]
+    )
+    test["breath_id__u_in__diffmean"] = (
+        test.groupby(["breath_id"])["u_in"].transform("mean") - test["u_in"]
+    )
+
+    test = test.merge(
+        pd.get_dummies(test["R"], prefix="R"), left_index=True, right_index=True
+    ).drop(["R"], axis=1)
+    test = test.merge(
+        pd.get_dummies(test["C"], prefix="C"), left_index=True, right_index=True
+    ).drop(["C"], axis=1)
+    test = test.merge(
+        pd.get_dummies(test["R__C"], prefix="R__C"), left_index=True, right_index=True
+    ).drop(["R__C"], axis=1)
+
+    test["u_in_cumsum"] = test.groupby(["breath_id"])["u_in"].cumsum()
+    test["time_step_cumsum"] = test.groupby(["breath_id"])["time_step"].cumsum()
+
+    return train, test

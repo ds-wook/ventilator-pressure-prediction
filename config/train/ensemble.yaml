@@ -1,0 +1,12 @@
+dataset:
+  path: ../input/ventilator-pressure-prediction
+
+
+weight:
+  w1: 0.5
+  w2: 0.5
+
+
+submit:
+  path: ../submit
+  name: nn_lgbm_ensemble.csv

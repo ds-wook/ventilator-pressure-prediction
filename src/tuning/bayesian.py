@@ -16,8 +16,7 @@ from optuna.samplers import TPESampler
 from optuna.study import Study
 from optuna.trial import FrozenTrial, Trial
 from sklearn.metrics import mean_absolute_error
-
-from model.model_selection import ShufflableGroupKFold
+from sklearn.model_selection import GroupKFold
 
 warnings.filterwarnings("ignore")
 
@@ -31,7 +30,7 @@ class BayesianOptimizer:
     def build_study(self, trials: FrozenTrial, verbose: bool = False):
         try:
             run = neptune.init(
-                project="ds-wook/optiver-prediction", tags="optimization"
+                project="ds-wook/ventilator-pressure", tags=["Optimization", "LightGBM"]
             )
 
             neptune_callback = optuna_utils.NeptuneCallback(
@@ -75,13 +74,14 @@ class BayesianOptimizer:
         params["n_estimators"] = 30000
         params["boosting_type"] = "gbdt"
         params["objective"] = "mae"
+        params["random_state"] = 42
         params["n_jobs"] = -1
 
-        with open(to_absolute_path("../../config/train/train.yaml")) as f:
+        with open(to_absolute_path("../config/train/train.yaml")) as f:
             train_dict = yaml.load(f, Loader=yaml.FullLoader)
         train_dict["params"] = params
 
-        with open(to_absolute_path("../../config/train/" + params_name), "w") as p:
+        with open(to_absolute_path("../config/train/" + params_name), "w") as p:
             yaml.dump(train_dict, p)
 
 
@@ -93,21 +93,19 @@ def lgbm_objective(
     n_fold: int,
 ) -> float:
     params = {
-        "n_estimators": 20000,
+        "n_estimators": 30000,
         "objective": "mae",
         "boosting_type": "gbdt",
         "n_jobs": -1,
-        "learning_rate": trial.suggest_float("learning_rate", 4e-01, 1),
-        "reg_alpha": trial.suggest_float("reg_alpha", 1e-02, 1),
-        "reg_lambda": trial.suggest_float("reg_lambda", 1e-02, 1),
-        "num_leaves": trial.suggest_int("num_leaves", 16, 64),
-        "colsample_bytree": trial.suggest_uniform("colsample_bytree", 0.1, 1),
-        "subsample": trial.suggest_uniform("subsample", 0.1, 1),
+        "learning_rate": trial.suggest_float("learning_rate", 3e-01, 5e-01),
+        "num_leaves": trial.suggest_int("num_leaves", 512, 1024),
         "max_depth": trial.suggest_int("max_depth", 3, 16),
+        "max_bin": trial.suggest_int("max_bin", 512, 1024),
+        "min_child_samples": trial.suggest_int("min_child_samples", 16, 64),
     }
-    pruning_callback = LightGBMPruningCallback(trial, "RMSPE", valid_name="valid_1")
+    pruning_callback = LightGBMPruningCallback(trial, "l1", valid_name="valid_1")
 
-    group_kf = ShufflableGroupKFold(n_splits=n_fold, random_state=2021, shuffle=True)
+    group_kf = GroupKFold(n_splits=n_fold)
     splits = group_kf.split(X, y, groups)
     lgbm_oof = np.zeros(X.shape[0])
 
@@ -123,7 +121,7 @@ def lgbm_objective(
             y_train,
             eval_set=[(X_train, y_train), (X_valid, y_valid)],
             eval_metric="mae",
-            early_stopping_rounds=100,
+            early_stopping_rounds=25,
             verbose=False,
             callbacks=[pruning_callback],
         )
