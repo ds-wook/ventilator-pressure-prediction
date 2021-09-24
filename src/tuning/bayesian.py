@@ -72,7 +72,7 @@ class BayesianOptimizer:
     @staticmethod
     def lgbm_save_params(study: Study, params_name: str):
         params = study.best_trial.params
-        params["n_estimators"] = 20000
+        params["n_estimators"] = 30000
         params["boosting_type"] = "gbdt"
         params["objective"] = "mae"
         params["n_jobs"] = -1

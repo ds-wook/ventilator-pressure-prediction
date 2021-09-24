@@ -5,7 +5,9 @@ Simulate a ventilator connected to a sedated patient's lung
 ### Benchmark
 |Score|CV|Public LB|private LB|
 |-----|--|------|-------|
-|LightGBM(5-group kfold)|-|-|-|
+|LightGBM(5-GroupKfold)|||-|
+|LSTM(5-GroupKfold)|0.4945|0.455|-|
+
 
 ### Requirements
 + numpy
@@ -14,7 +16,7 @@ Simulate a ventilator connected to a sedated patient's lung
 + lightgbm
 + xgboost
 + optuna
-+ neptune
++ neptune.ai
 + hydra
 + pytorch-tabnet
 + pytorch

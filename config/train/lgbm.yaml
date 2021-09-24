@@ -13,7 +13,7 @@ params:
   colsample_bytree: 0.2788441133807552
   learning_rate: 0.5
   max_depth: 4
-  n_estimators: 20000
+  n_estimators: 30000
   num_leaves: 31
   objective: mae
   reg_alpha: 0.219772826786357

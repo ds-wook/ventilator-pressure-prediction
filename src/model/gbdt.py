@@ -7,7 +7,9 @@ import pandas as pd
 from lightgbm import LGBMRegressor
 from neptune.new.integrations.lightgbm import NeptuneCallback, create_booster_summary
 from sklearn.metrics import mean_absolute_error
+
 from model.model_selection import ShufflableGroupKFold
+from utils.utils import timer
 
 warnings.filterwarnings("ignore")
 
@@ -32,23 +34,23 @@ def train_group_kfold_lightgbm(
     )
 
     for fold, (train_idx, valid_idx) in enumerate(splits, 1):
-        print("Fold :", fold)
         neptune_callback = NeptuneCallback(run=run, base_namespace=f"fold_{fold}")
         # create dataset
         X_train, y_train = X.iloc[train_idx], y.iloc[train_idx]
         X_valid, y_valid = X.iloc[valid_idx], y.iloc[valid_idx]
-
-        # model
-        model = LGBMRegressor(**params)
-        model.fit(
-            X_train,
-            y_train,
-            eval_set=[(X_train, y_train), (X_valid, y_valid)],
-            early_stopping_rounds=100,
-            eval_metric="mae",
-            verbose=verbose,
-            callbacks=[neptune_callback],
-        )
+        with timer(f"Fold-{fold} Start"):
+            # model
+            model = LGBMRegressor(**params)
+            model.fit(
+                X_train,
+                y_train,
+                eval_set=[(X_train, y_train), (X_valid, y_valid)],
+                early_stopping_rounds=100,
+                eval_metric="mae",
+                categorical_feature=["R", "C"],
+                verbose=verbose,
+                callbacks=[neptune_callback],
+            )
         # validation
         lgb_oof[valid_idx] = model.predict(X_valid, num_iteration=model.best_iteration_)
         lgb_preds += model.predict(X_test, num_iteration=model.best_iteration_) / n_fold
