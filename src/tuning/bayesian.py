@@ -72,7 +72,7 @@ class BayesianOptimizer:
     @staticmethod
     def lgbm_save_params(study: Study, params_name: str):
         params = study.best_trial.params
-        params["n_estimators"] = 10000
+        params["n_estimators"] = 20000
         params["boosting_type"] = "gbdt"
         params["objective"] = "mae"
         params["n_jobs"] = -1
@@ -93,7 +93,7 @@ def lgbm_objective(
     n_fold: int,
 ) -> float:
     params = {
-        "n_estimators": 10000,
+        "n_estimators": 20000,
         "objective": "mae",
         "boosting_type": "gbdt",
         "n_jobs": -1,
