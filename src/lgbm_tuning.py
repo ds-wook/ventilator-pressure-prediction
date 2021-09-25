@@ -18,8 +18,11 @@ def _main(cfg: DictConfig):
     ]
     train_x = train[columns]
     train_y = train["pressure"]
+    groups = train["breath_id"]
 
-    objective = partial(lgbm_objective, X=train_x, y=train_y, n_fold=cfg.model.fold)
+    objective = partial(
+        lgbm_objective, X=train_x, y=train_y, groups=groups, n_fold=cfg.model.fold
+    )
     bayesian_optim = BayesianOptimizer(objective)
     study = bayesian_optim.build_study(trials=cfg.optimization.trials)
     bayesian_optim.lgbm_save_params(study, cfg.optimization.params)

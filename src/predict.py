@@ -21,3 +21,6 @@ def _main(cfg: DictConfig):
 
 if __name__ == "__main__":
     _main()
+{
+    
+}
