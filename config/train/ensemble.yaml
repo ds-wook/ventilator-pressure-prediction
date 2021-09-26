@@ -5,7 +5,7 @@ dataset:
 weight:
   w1: 0.5
   w2: 0.5
-
+  w3: 0
 
 submit:
   path: ../submit
