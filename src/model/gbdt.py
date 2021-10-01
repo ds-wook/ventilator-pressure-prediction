@@ -45,7 +45,7 @@ def train_group_kfold_lightgbm(
         X_valid, y_valid = train_x.iloc[valid_idx], train_y.iloc[valid_idx]
 
         # model
-        model = LGBMRegressor(**params, n_estimators=10000)
+        model = LGBMRegressor(**params)
         model.fit(
             X_train,
             y_train,
