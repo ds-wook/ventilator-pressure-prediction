@@ -102,6 +102,8 @@ def lgbm_objective(
         "max_depth": trial.suggest_int("max_depth", 3, 16),
         "max_bin": trial.suggest_int("max_bin", 512, 1024),
         "min_child_samples": trial.suggest_int("min_child_samples", 16, 64),
+        "reg_alpha": trial.suggest_float("reg_alpha", 1e-02, 1e-01),
+        "reg_lambda": trial.suggest_float("reg_lambda", 1e-02, 1e-01),
     }
     pruning_callback = LightGBMPruningCallback(trial, "l1", valid_name="valid_1")
 
@@ -121,7 +123,7 @@ def lgbm_objective(
             y_train,
             eval_set=[(X_train, y_train), (X_valid, y_valid)],
             eval_metric="mae",
-            early_stopping_rounds=25,
+            early_stopping_rounds=100,
             verbose=False,
             callbacks=[pruning_callback],
         )

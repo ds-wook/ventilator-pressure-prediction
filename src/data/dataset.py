@@ -15,6 +15,7 @@ def load_dataset(df: pd.DataFrame) -> pd.DataFrame:
     df["u_out_lag3"] = df.groupby("breath_id")["u_out"].shift(3)
     df["u_in_lag_back3"] = df.groupby("breath_id")["u_in"].shift(-3)
     df["u_out_lag_back3"] = df.groupby("breath_id")["u_out"].shift(-3)
+    df["time_lag"] = df["time_step"].shift(2)
     df = df.fillna(0)
 
     df["R__C"] = df["R"].astype(str) + "__" + df["C"].astype(str)
@@ -54,5 +55,69 @@ def load_dataset(df: pd.DataFrame) -> pd.DataFrame:
 
     df["u_in_cumsum"] = df.groupby(["breath_id"])["u_in"].cumsum()
     df["time_step_cumsum"] = df.groupby(["breath_id"])["time_step"].cumsum()
+    df["ewm_u_in_mean"] = (
+        df.groupby("breath_id")["u_in"]
+        .ewm(halflife=10)
+        .mean()
+        .reset_index(level=0, drop=True)
+    )
+    df["ewm_u_in_std"] = (
+        df.groupby("breath_id")["u_in"]
+        .ewm(halflife=10)
+        .std()
+        .reset_index(level=0, drop=True)
+    )
+    df["ewm_u_in_corr"] = (
+        df.groupby("breath_id")["u_in"]
+        .ewm(halflife=10)
+        .corr()
+        .reset_index(level=0, drop=True)
+    )
+
+    df["rolling_10_mean"] = (
+        df.groupby("breath_id")["u_in"]
+        .rolling(window=10, min_periods=1)
+        .mean()
+        .reset_index(level=0, drop=True)
+    )
+    df["rolling_10_max"] = (
+        df.groupby("breath_id")["u_in"]
+        .rolling(window=10, min_periods=1)
+        .max()
+        .reset_index(level=0, drop=True)
+    )
+    df["rolling_10_std"] = (
+        df.groupby("breath_id")["u_in"]
+        .rolling(window=10, min_periods=1)
+        .std()
+        .reset_index(level=0, drop=True)
+    )
+
+    df["expand_mean"] = (
+        df.groupby("breath_id")["u_in"]
+        .expanding(2)
+        .mean()
+        .reset_index(level=0, drop=True)
+    )
+    df["expand_max"] = (
+        df.groupby("breath_id")["u_in"]
+        .expanding(2)
+        .max()
+        .reset_index(level=0, drop=True)
+    )
+    df["expand_std"] = (
+        df.groupby("breath_id")["u_in"]
+        .expanding(2)
+        .std()
+        .reset_index(level=0, drop=True)
+    )
+    return df
+
+
+def bilstm_data(df: pd.DataFrame) -> pd.DataFrame:
+    for i in range(10):
+        df[f"bilstm_pred{i}_lag1"] = df.groupby("breath_id")[f"bilstm_pred{i}"].shift(1)
+        df[f"bilstm_pred{i}_lag2"] = df.groupby("breath_id")[f"bilstm_pred{i}"].shift(2)
+    df = df.fillna(0)
 
     return df

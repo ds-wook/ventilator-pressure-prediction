@@ -10,9 +10,8 @@ def _main(cfg: DictConfig):
     submit_path = to_absolute_path(cfg.submit.path) + "/"
     submission = pd.read_csv(path + "sample_submission.csv")
 
-    lstm_preds = pd.read_csv(submit_path + "lstm_5fold.csv")
-    lgbm_preds = pd.read_csv(submit_path + "feg_lightgbm_5fold.csv")
-    lgbm_preds.to_csv(submit_path + "lightgbm_post_preprocessing.csv", index=False)
+    lstm_preds = pd.read_csv(submit_path + "linear_l2.csv")
+    lgbm_preds = pd.read_csv(submit_path + "nn_lgbm_ensemble.csv")
     submission.iloc[:, 1:] = (
         cfg.weight.w1 * lstm_preds["pressure"]
         + cfg.weight.w2 * lgbm_preds["pressure"]

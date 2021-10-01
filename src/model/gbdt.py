@@ -50,7 +50,7 @@ def train_group_kfold_lightgbm(
             X_train,
             y_train,
             eval_set=[(X_train, y_train), (X_valid, y_valid)],
-            early_stopping_rounds=15,
+            early_stopping_rounds=100,
             eval_metric="mae",
             verbose=verbose,
             callbacks=[neptune_callback],
