@@ -11,10 +11,9 @@ def _main(cfg: DictConfig):
     submission = pd.read_csv(path + "sample_submission.csv")
 
     lstm_preds = pd.read_csv(submit_path + "linear_l2.csv")
-    lgbm_preds = pd.read_csv(submit_path + "nn_lgbm_ensemble.csv")
+    lgbm_preds = pd.read_csv(submit_path + "best_params_stacking_lightgbm.csv")
     submission.iloc[:, 1:] = (
-        cfg.weight.w1 * lstm_preds["pressure"]
-        + cfg.weight.w2 * lgbm_preds["pressure"]
+        cfg.weight.w1 * lstm_preds["pressure"] + cfg.weight.w2 * lgbm_preds["pressure"]
     )
 
     submission.to_csv(submit_path + cfg.submit.name, index=False)
@@ -22,3 +21,4 @@ def _main(cfg: DictConfig):
 
 if __name__ == "__main__":
     _main()
+
