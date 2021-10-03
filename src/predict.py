@@ -1,4 +1,5 @@
 import hydra
+import numpy as np
 import pandas as pd
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig
@@ -10,12 +11,16 @@ def _main(cfg: DictConfig):
     submit_path = to_absolute_path(cfg.submit.path) + "/"
     submission = pd.read_csv(path + "sample_submission.csv")
 
-    lstm_preds = pd.read_csv(submit_path + "ensemble.csv")
-    lgbm_preds = pd.read_csv(submit_path + "fea_stacking_lightgbm.csv")
+    lstm_preds = pd.read_csv(submit_path + "median_lstm.csv")
+    lgbm_preds = pd.read_csv(submit_path + "ensemble_postpreprocess.csv")
     submission.iloc[:, 1:] = (
         cfg.weight.w1 * lstm_preds["pressure"] + cfg.weight.w2 * lgbm_preds["pressure"]
     )
-
+    train = pd.read_csv(path + "train.csv")
+    pressure_unique = np.array(sorted(train["pressure"].unique()))
+    submission["pressure"] = submission["pressure"].map(
+        lambda x: pressure_unique[np.abs(pressure_unique - x).argmin()]
+    )
     submission.to_csv(submit_path + cfg.submit.name, index=False)
 
 
