@@ -3,7 +3,7 @@ import pandas as pd
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig
 
-from data.dataset import bilstm_data
+from data.dataset import bilstm_data, add_features
 from model.gbdt import train_group_kfold_lightgbm
 from utils.utils import reduce_mem_usage
 
@@ -27,6 +27,9 @@ def _main(cfg: DictConfig):
     )
     train = bilstm_data(train)
     test = bilstm_data(test)
+    train = add_features(train)
+    test = add_features(test)
+
     train = reduce_mem_usage(train)
     test = reduce_mem_usage(test)
 
