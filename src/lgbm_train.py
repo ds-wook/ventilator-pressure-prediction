@@ -27,9 +27,11 @@ def _main(cfg: DictConfig):
     )
     train = bilstm_data(train)
     test = bilstm_data(test)
+    train = reduce_mem_usage(train)
+    test = reduce_mem_usage(test)
+
     train = add_features(train)
     test = add_features(test)
-
     train = reduce_mem_usage(train)
     test = reduce_mem_usage(test)
 
