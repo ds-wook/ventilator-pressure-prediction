@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 
@@ -114,10 +115,13 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def bilstm_data(df: pd.DataFrame, num: int) -> pd.DataFrame:
+def bilstm_data(
+    df: pd.DataFrame, pressure_unique: np.ndarray, num: int
+) -> pd.DataFrame:
     df.rename(
         columns={f"pressure{i}": f"bilstm_pred{i}" for i in range(num)}, inplace=True
     )
+
     for i in range(num):
         df[f"bilstm_pred{i}_lag1"] = df.groupby("breath_id")[f"bilstm_pred{i}"].shift(1)
         df[f"bilstm_pred{i}_lag2"] = df.groupby("breath_id")[f"bilstm_pred{i}"].shift(2)

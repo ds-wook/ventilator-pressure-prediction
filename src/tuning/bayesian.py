@@ -44,7 +44,10 @@ class BayesianOptimizer:
                 pruner=MedianPruner(n_startup_trials=10, n_warmup_steps=5),
             )
             study.optimize(
-                self.objective_function, n_trials=trials, callbacks=[neptune_callback]
+                self.objective_function,
+                n_trials=trials,
+                callbacks=[neptune_callback],
+                timeout=21600,
             )
             run.stop()
 

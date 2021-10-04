@@ -1,4 +1,5 @@
 import hydra
+import numpy as np
 import pandas as pd
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig
@@ -17,11 +18,12 @@ def _main(cfg: DictConfig):
     train_bilstm = pd.read_csv(path + "finetuning_train.csv")
     test_bilstm = pd.read_csv(path + "finetuning_test.csv")
 
+    pressure_unique = np.array(sorted(train["pressure"].unique()))
     train = pd.merge(train, train_bilstm, on="id")
     test = pd.merge(test, test_bilstm, on="id")
 
-    train = bilstm_data(train, cfg.dataset.num)
-    test = bilstm_data(test, cfg.dataset.num)
+    train = bilstm_data(train, pressure_unique, cfg.dataset.num)
+    test = bilstm_data(test, pressure_unique, cfg.dataset.num)
     train = reduce_mem_usage(train)
     test = reduce_mem_usage(test)
 
@@ -40,6 +42,9 @@ def _main(cfg: DictConfig):
 
     # Save test predictions
     submission["pressure"] = lgb_preds
+    submission["pressure"] = submission["pressure"].map(
+        lambda x: pressure_unique[np.abs(pressure_unique - x).argmin()]
+    )
     submit_path = to_absolute_path(cfg.submit.path) + "/"
     submission.to_csv(submit_path + cfg.submit.name, index=False)
 
