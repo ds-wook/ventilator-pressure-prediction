@@ -114,8 +114,11 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def bilstm_data(df: pd.DataFrame) -> pd.DataFrame:
-    for i in range(10):
+def bilstm_data(df: pd.DataFrame, num: int) -> pd.DataFrame:
+    df.rename(
+        columns={f"pressure{i}": f"bilstm_pred{i}" for i in range(num)}, inplace=True
+    )
+    for i in range(num):
         df[f"bilstm_pred{i}_lag1"] = df.groupby("breath_id")[f"bilstm_pred{i}"].shift(1)
         df[f"bilstm_pred{i}_lag2"] = df.groupby("breath_id")[f"bilstm_pred{i}"].shift(2)
     df = df.fillna(0)

@@ -3,7 +3,7 @@ import pandas as pd
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig
 
-from data.dataset import bilstm_data, add_features
+from data.dataset import add_features, bilstm_data
 from model.gbdt import train_group_kfold_lightgbm
 from utils.utils import reduce_mem_usage
 
@@ -14,19 +14,14 @@ def _main(cfg: DictConfig):
     train = pd.read_csv(path + cfg.dataset.train)
     test = pd.read_csv(path + cfg.dataset.test)
     submission = pd.read_csv(path + cfg.dataset.submit)
-    train_bilstm = pd.read_csv(path + "lstm_train.csv")
-    test_bilstm = pd.read_csv(path + "lstm_test.csv")
+    train_bilstm = pd.read_csv(path + "finetuning_train.csv")
+    test_bilstm = pd.read_csv(path + "finetuning_test.csv")
 
     train = pd.merge(train, train_bilstm, on="id")
     test = pd.merge(test, test_bilstm, on="id")
-    train.rename(
-        columns={f"pressure{i}": f"bilstm_pred{i}" for i in range(10)}, inplace=True
-    )
-    test.rename(
-        columns={f"pressure{i}": f"bilstm_pred{i}" for i in range(10)}, inplace=True
-    )
-    train = bilstm_data(train)
-    test = bilstm_data(test)
+
+    train = bilstm_data(train, cfg.dataset.num)
+    test = bilstm_data(test, cfg.dataset.num)
     train = reduce_mem_usage(train)
     test = reduce_mem_usage(test)
 
