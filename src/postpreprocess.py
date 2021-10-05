@@ -11,7 +11,7 @@ def _main(cfg: DictConfig):
     submit_path = to_absolute_path(cfg.submit.path) + "/"
 
     train = pd.read_csv(path + "train.csv")
-    ensemble_preds = pd.read_csv(submit_path + "fea_ensemble.csv")
+    ensemble_preds = pd.read_csv(submit_path + "finetuning_stacking_lgbm.csv")
 
     pressure_unique = np.array(sorted(train["pressure"].unique()))
     ensemble_preds["pressure"] = ensemble_preds["pressure"].map(

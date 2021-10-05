@@ -62,8 +62,6 @@ def train_group_kfold_lightgbm(
         # Log summary metadata to the same run under the "lgbm_summary" namespace
         run[f"lgbm_summary/fold_{fold}"] = create_booster_summary(
             booster=model,
-            log_trees=True,
-            list_trees=[0, 1, 2, 3],
             y_pred=lgb_oof[valid_idx],
             y_true=y_valid,
         )
