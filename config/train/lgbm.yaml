@@ -3,7 +3,7 @@ dataset:
   test: test.csv
   train: train.csv
   submit: sample_submission.csv
-  num: 11
+  num: 10
 
 model:
   fold: 5

@@ -51,3 +51,22 @@ def reduce_mem_usage(df: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
             )
         )
     return df
+
+
+def find_nearest(sorted_pressures: np.ndarray, prediction: float) -> float:
+    insert_idx = np.searchsorted(sorted_pressures, prediction)
+    total_pressures_len = len(sorted_pressures)
+
+    if insert_idx == total_pressures_len:
+        return sorted_pressures[-1]
+    elif insert_idx == 0:
+        return sorted_pressures[0]
+
+    lower_val = sorted_pressures[insert_idx - 1]
+    upper_val = sorted_pressures[insert_idx]
+
+    return (
+        lower_val
+        if abs(lower_val - prediction) < abs(upper_val - prediction)
+        else upper_val
+    )

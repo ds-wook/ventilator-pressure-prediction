@@ -30,7 +30,7 @@ def train_group_kfold_lightgbm(
     kf = GroupKFold(n_splits=n_fold)
     splits = kf.split(train, train_y, groups)
     lgb_oof = np.zeros(train_x.shape[0])
-    lgb_preds = np.zeros(test_x.shape[0])
+    lgb_preds = []
 
     run = neptune.init(
         project="ds-wook/ventilator-pressure", tags=["LightGBM", "GroupKFold"]
@@ -57,7 +57,7 @@ def train_group_kfold_lightgbm(
         )
         # validation
         lgb_oof[valid_idx] = model.predict(X_valid)
-        lgb_preds += model.predict(test_x) / n_fold
+        lgb_preds.append(model.predict(test_x))
 
         # Log summary metadata to the same run under the "lgbm_summary" namespace
         run[f"lgbm_summary/fold_{fold}"] = create_booster_summary(
@@ -69,4 +69,5 @@ def train_group_kfold_lightgbm(
     print(f"Total Performance MAE: {mean_absolute_error(train_y, lgb_oof)}")
     run.stop()
 
-    return lgb_preds
+    lgbm_preds = np.median(np.vstack(lgb_preds), axis=0)
+    return lgbm_preds

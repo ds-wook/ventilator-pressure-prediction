@@ -6,7 +6,7 @@ from omegaconf import DictConfig
 
 from data.dataset import add_features, bilstm_data
 from model.gbdt import train_group_kfold_lightgbm
-from utils.utils import reduce_mem_usage
+from utils.utils import find_nearest, reduce_mem_usage
 
 
 @hydra.main(config_path="../config/train/", config_name="lgbm.yaml")
@@ -15,8 +15,8 @@ def _main(cfg: DictConfig):
     train = pd.read_csv(path + cfg.dataset.train)
     test = pd.read_csv(path + cfg.dataset.test)
     submission = pd.read_csv(path + cfg.dataset.submit)
-    train_bilstm = pd.read_csv(path + "finetuning_train.csv")
-    test_bilstm = pd.read_csv(path + "finetuning_test.csv")
+    train_bilstm = pd.read_csv(path + "lstm_train.csv")
+    test_bilstm = pd.read_csv(path + "lstm_test.csv")
 
     pressure_unique = np.array(sorted(train["pressure"].unique()))
     train = pd.merge(train, train_bilstm, on="id")
@@ -32,7 +32,7 @@ def _main(cfg: DictConfig):
     train = reduce_mem_usage(train)
     test = reduce_mem_usage(test)
 
-    lgb_preds = train_group_kfold_lightgbm(
+    lgbm_preds = train_group_kfold_lightgbm(
         cfg.model.fold,
         train,
         test,
@@ -40,10 +40,15 @@ def _main(cfg: DictConfig):
         cfg.model.verbose,
     )
 
+    all_pressure = np.sort(train.pressure.unique())
+    print("The first 25 unique pressures...")
+
     # Save test predictions
-    submission["pressure"] = lgb_preds
-    submission["pressure"] = submission["pressure"].map(
-        lambda x: pressure_unique[np.abs(pressure_unique - x).argmin()]
+    submission["pressure"] = lgbm_preds
+
+    # ENSEMBLE FOLDS WITH MEDIAN AND ROUND PREDICTIONS
+    submission["pressure"] = submission["pressure"].apply(
+        lambda x: find_nearest(all_pressure, x)
     )
     submit_path = to_absolute_path(cfg.submit.path) + "/"
     submission.to_csv(submit_path + cfg.submit.name, index=False)
