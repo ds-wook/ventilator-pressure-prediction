@@ -1,11 +1,11 @@
 import hydra
-import numpy as np
 import pandas as pd
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig
+from sklearn.metrics import mean_absolute_error
 
 from data.dataset import add_features, bilstm_data
-from trainer.gbdt import train_group_kfold_lightgbm
+from trainer.boosting_tree import LGBMTrainer
 from utils.utils import reduce_mem_usage
 
 
@@ -40,29 +40,25 @@ def _main(cfg: DictConfig):
     train = pd.concat([train, test], axis=0)
     train = reduce_mem_usage(train)
 
-    lgbm_preds = train_group_kfold_lightgbm(
-        cfg.model.fold,
-        train,
-        test,
-        dict(cfg.params),
-        cfg.model.verbose,
-    )
+    columns = [
+        col
+        for col in train.columns
+        if col not in ["id", "breath_id", "pressure"]
+    ]
 
-    all_pressure = np.sort(train.pressure.unique())
-    print("The first 25 unique pressures...")
-    pressure_min = all_pressure[0].item()
-    pressure_max = all_pressure[-1].item()
-    pressure_step = (all_pressure[1] - all_pressure[0]).item()
+    train_x = train[columns]
+    train_y = train["pressure"]
+    test_x = test[columns]
+    groups = train["breath_id"]
+
+    lgbm_trainer = LGBMTrainer(cfg.model.fold, mean_absolute_error)
+    lgbm_trainer.train(train_x, train_y, groups, dict(cfg.params), cfg.model.verbose)
+    lgbm_preds = lgbm_trainer.predict(test_x)
+    lgbm_preds = lgbm_trainer.postprocess(train, lgbm_preds)
 
     # Save test predictions
     submission["pressure"] = lgbm_preds
 
-    # ENSEMBLE FOLDS WITH MEDIAN AND ROUND PREDICTIONS
-    submission["pressure"] = (
-        np.round((submission.pressure - pressure_min) / pressure_step) * pressure_step
-        + pressure_min
-    )
-    submission.pressure = np.clip(submission.pressure, pressure_min, pressure_max)
     submit_path = to_absolute_path(cfg.submit.path) + "/"
     submission.to_csv(submit_path + cfg.submit.name, index=False)
 

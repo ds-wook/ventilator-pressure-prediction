@@ -69,9 +69,9 @@ class LGBMTrainer:
 
             models[f"fold_{fold}"] = model
             # validation
-            lgb_oof[valid_idx, :] = model.predict(X_valid)
+            lgb_oof[valid_idx] = model.predict(X_valid)
 
-            score = self.metric(y_valid.values, lgb_oof[valid_idx, :])
+            score = self.metric(y_valid.values, lgb_oof[valid_idx])
             scores[f"fold_{fold}"] = score
             logger.info(f"fold {fold}: {score}")
 
