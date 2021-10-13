@@ -29,12 +29,12 @@ class LoggerFactory(metaclass=Singleton):
     def __init__(self, log_path: str = None, loglevel=logging.INFO):
         self.loglevel = loglevel
         if log_path is None:
-            self.log_path = Path("./log")
+            self.log_path = Path("../../log/log")
         else:
             self.log_path = Path(log_path)
             self.log_path.parent.mkdir(parents=True, exist_ok=True)
 
-    def getLogger(self, log_name):
+    def getLogger(self, log_name: str) -> logging.getLogger:
         fmt = "%(asctime)s [%(name)s|%(levelname)s] %(message)s"
         formatter = logging.Formatter(fmt)
         logger = logging.getLogger(log_name)
@@ -50,18 +50,17 @@ class LoggerFactory(metaclass=Singleton):
         )
         handler.setFormatter(formatter)
         logger.addHandler(handler)
-
         logger.setLevel(self.loglevel)
 
         return logger
 
 
 @contextmanager
-def timer(name: str):
-    t0 = time()
-    print(f"[{name}] start")
+def timer(name, logger: logging.getLogger):
+    t0 = time.time()
+    logger.debug(f"[{name}] start")
     yield
-    print(f"[{name}] done in {time() - t0:.0f} s")
+    logger.debug(f"[{name}] done in {time.time() - t0:.0f} s")
 
 
 def reduce_mem_usage(df: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:

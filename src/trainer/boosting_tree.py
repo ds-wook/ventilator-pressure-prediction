@@ -9,6 +9,9 @@ from lightgbm import LGBMRegressor
 from neptune.new.integrations.lightgbm import NeptuneCallback, create_booster_summary
 from sklearn.model_selection import GroupKFold
 
+from utils.utils import LoggerFactory
+
+logger = LoggerFactory().getLogger(__name__)
 warnings.filterwarnings("ignore")
 
 
@@ -68,8 +71,10 @@ class LGBMTrainer:
             # validation
             lgb_oof[valid_idx, :] = model.predict(X_valid)
 
-            score = self.metric(train_y.values, lgb_oof[valid_idx, :])
+            score = self.metric(y_valid.values, lgb_oof[valid_idx, :])
             scores[f"fold_{fold}"] = score
+            logger.info(f"fold {fold}: {score}")
+
             gc.collect()
             # Log summary metadata to the same run under the "lgbm_summary" namespace
             run[f"lgbm_summary/fold_{fold}"] = create_booster_summary(
@@ -79,6 +84,7 @@ class LGBMTrainer:
             )
 
         oof_score = self.metric(train_y.values, lgb_oof)
+        logger.info(f"oof score: {oof_score}")
 
         self.result = ModelResult(
             oof_preds=lgb_oof,
@@ -95,7 +101,7 @@ class LGBMTrainer:
         folds = self.n_fold
         preds = []
 
-        for fold in range(folds):
+        for fold in range(1, folds + 1):
             model = self.result.models[f"fold_{fold}"]
             preds.append(model.predict(test_x))
 
