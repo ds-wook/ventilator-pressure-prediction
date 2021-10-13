@@ -166,7 +166,7 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def bilstm_data(
-    df: pd.DataFrame, pressure_unique: np.ndarray, num: int
+    df: pd.DataFrame, num: int
 ) -> pd.DataFrame:
     df.rename(
         columns={f"pressure{i}": f"bilstm_pred{i}" for i in range(num)}, inplace=True

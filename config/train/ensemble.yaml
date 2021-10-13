@@ -3,8 +3,10 @@ dataset:
 
 
 weight:
-  w1: 0.5
-  w2: 0.5
+  w1: 0.25
+  w2: 0.25
+  w3: 0.25
+  w4: 0.25
 
 submit:
   path: ../submit

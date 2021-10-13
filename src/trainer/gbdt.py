@@ -1,3 +1,4 @@
+import gc
 import warnings
 from typing import Any, Dict, Optional, Tuple, Union
 
@@ -19,13 +20,16 @@ def train_group_kfold_lightgbm(
     params: Optional[Dict[str, Any]] = None,
     verbose: Union[int, bool] = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
-
     columns = [
-        col for col in train.columns if col not in ["id", "breath_id", "pressure"]
+        col
+        for col in train.columns
+        if col not in ["id", "breath_id", "pressure", "u_out"]
     ]
+
     train_x = train[columns]
     train_y = train["pressure"]
     test_x = test[columns]
+
     groups = train["breath_id"]
     kf = GroupKFold(n_splits=n_fold)
     splits = kf.split(train, train_y, groups)
@@ -59,6 +63,7 @@ def train_group_kfold_lightgbm(
         lgb_oof[valid_idx] = model.predict(X_valid)
         lgb_preds.append(model.predict(test_x))
 
+        gc.collect()
         # Log summary metadata to the same run under the "lgbm_summary" namespace
         run[f"lgbm_summary/fold_{fold}"] = create_booster_summary(
             booster=model,
