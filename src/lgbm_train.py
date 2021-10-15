@@ -32,10 +32,6 @@ def _main(cfg: DictConfig):
     test = add_features(test)
     train = reduce_mem_usage(train)
     test = reduce_mem_usage(test)
-    # preds = pd.read_csv(submit_path + "median_stacking_lightgbm.csv")
-    # test[cfg.dataset.target] = preds[cfg.dataset.target]
-    # train = pd.concat([train, test], axis=0)
-    # train = reduce_mem_usage(train)
 
     train = train[train["u_out"] < 1].reset_index(drop=True)
 
