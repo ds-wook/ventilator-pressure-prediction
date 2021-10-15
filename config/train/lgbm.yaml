@@ -4,6 +4,8 @@ dataset:
   train: train.csv
   submit: sample_submission.csv
   num: 10
+  target: pressure
+  groups: breath_id
 
 model:
   fold: 5

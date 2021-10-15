@@ -1,8 +1,14 @@
-import numpy as np
 import pandas as pd
 
 
 def add_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Loads Feature engineering Dataset
+        Parameter:
+            df: train or test dataset
+        Return:
+            df: feature engineering dataset
+    """
     df["area"] = df["time_step"] * df["u_in"]
     df["area"] = df.groupby("breath_id")["area"].cumsum()
     df["cross"] = df["u_in"] * df["u_out"]

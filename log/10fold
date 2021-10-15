@@ -1,0 +1,11 @@
+2021-10-14 00:28:08,832 [trainer.boosting_tree|INFO] fold 1: 0.10007191564997878
+2021-10-14 00:55:14,073 [trainer.boosting_tree|INFO] fold 2: 0.09964979352514697
+2021-10-14 01:12:54,206 [trainer.boosting_tree|INFO] fold 3: 0.10021355395727609
+2021-10-14 01:44:24,996 [trainer.boosting_tree|INFO] fold 4: 0.10017538806080233
+2021-10-14 02:05:14,047 [trainer.boosting_tree|INFO] fold 5: 0.100766303428739
+2021-10-14 02:25:31,136 [trainer.boosting_tree|INFO] fold 6: 0.09942006190406635
+2021-10-14 02:51:26,412 [trainer.boosting_tree|INFO] fold 7: 0.09881835344331419
+2021-10-14 03:17:39,599 [trainer.boosting_tree|INFO] fold 8: 0.0998683826352862
+2021-10-14 03:44:45,701 [trainer.boosting_tree|INFO] fold 9: 0.09961993422810635
+2021-10-14 04:08:00,143 [trainer.boosting_tree|INFO] fold 10: 0.09931872541465075
+2021-10-14 04:08:01,463 [trainer.boosting_tree|INFO] oof score: 0.09979224122473666

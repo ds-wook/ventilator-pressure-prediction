@@ -1,0 +1,14 @@
+2021-10-15 12:34:36,841 [trainer.boosting_tree|INFO] Train Shape: (10060000, 88)
+2021-10-15 12:34:50,763 [trainer.boosting_tree|INFO] Fold-1 Start!
+2021-10-15 14:05:29,139 [trainer.boosting_tree|INFO] fold 1: 0.0709709430542601
+2021-10-15 14:05:32,093 [trainer.boosting_tree|INFO] Fold-2 Start!
+2021-10-15 15:51:34,526 [trainer.boosting_tree|INFO] fold 2: 0.07087234285338385
+2021-10-15 15:51:36,727 [trainer.boosting_tree|INFO] Fold-3 Start!
+2021-10-15 17:39:09,419 [trainer.boosting_tree|INFO] fold 3: 0.07162226717436324
+2021-10-15 17:39:11,648 [trainer.boosting_tree|INFO] Fold-4 Start!
+2021-10-15 19:54:49,651 [trainer.boosting_tree|INFO] fold 4: 0.07101457999063593
+2021-10-15 19:54:52,236 [trainer.boosting_tree|INFO] Fold-5 Start!
+2021-10-15 21:37:14,543 [trainer.boosting_tree|INFO] fold 5: 0.07121216619589708
+2021-10-15 21:37:16,902 [trainer.boosting_tree|INFO] oof score: 0.07113845985370816
+2021-10-15 21:37:17,094 [trainer.boosting_tree|INFO] Inference Start!
+2021-10-15 23:29:05,144 [trainer.boosting_tree|INFO] Inference Finish!

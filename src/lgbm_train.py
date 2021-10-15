@@ -5,7 +5,7 @@ from omegaconf import DictConfig
 from sklearn.metrics import mean_absolute_error
 
 from data.dataset import add_features, bilstm_data
-from trainer.boosting_tree import LGBMTrainer
+from trainer.boosting_tree import LightGBMTrainer
 from utils.utils import reduce_mem_usage
 
 
@@ -13,10 +13,10 @@ from utils.utils import reduce_mem_usage
 def _main(cfg: DictConfig):
     path = to_absolute_path(cfg.dataset.path) + "/"
     submit_path = to_absolute_path(cfg.submit.path) + "/"
-
     train = pd.read_csv(path + cfg.dataset.train)
     test = pd.read_csv(path + cfg.dataset.test)
     submission = pd.read_csv(path + cfg.dataset.submit)
+
     train_bilstm = pd.read_csv(path + "lstm_train.csv")
     test_bilstm = pd.read_csv(path + "lstm_test.csv")
 
@@ -32,34 +32,35 @@ def _main(cfg: DictConfig):
     test = add_features(test)
     train = reduce_mem_usage(train)
     test = reduce_mem_usage(test)
+    # preds = pd.read_csv(submit_path + "median_stacking_lightgbm.csv")
+    # test[cfg.dataset.target] = preds[cfg.dataset.target]
+    # train = pd.concat([train, test], axis=0)
+    # train = reduce_mem_usage(train)
 
-    preds = pd.read_csv(submit_path + "median_stacking_lightgbm.csv")
-    test = pd.merge(test, preds, on="id")
-
-    print("Psudo Labeling Start")
-    train = pd.concat([train, test], axis=0)
-    train = reduce_mem_usage(train)
+    train = train[train["u_out"] < 1].reset_index(drop=True)
 
     columns = [
         col
         for col in train.columns
-        if col not in ["id", "breath_id", "pressure"]
+        if col not in ["id", "breath_id", "pressure", "u_out"]
     ]
 
     train_x = train[columns]
-    train_y = train["pressure"]
+    train_y = train[cfg.dataset.target]
     test_x = test[columns]
-    groups = train["breath_id"]
+    groups = train[cfg.dataset.groups]
 
-    lgbm_trainer = LGBMTrainer(cfg.model.fold, mean_absolute_error)
+    lgbm_trainer = LightGBMTrainer(cfg.model.fold, mean_absolute_error)
     lgbm_trainer.train(train_x, train_y, groups, dict(cfg.params), cfg.model.verbose)
     lgbm_preds = lgbm_trainer.predict(test_x)
     lgbm_preds = lgbm_trainer.postprocess(train, lgbm_preds)
+    lgbm_oof = lgbm_trainer.result.oof_preds
 
+    # Save train predictions
+    train["lgbm_preds"] = lgbm_oof
+    train[["id", "lgbm_preds"]].to_csv(path + "stacking_oof.csv", index=False)
     # Save test predictions
     submission["pressure"] = lgbm_preds
-
-    submit_path = to_absolute_path(cfg.submit.path) + "/"
     submission.to_csv(submit_path + cfg.submit.name, index=False)
 
 

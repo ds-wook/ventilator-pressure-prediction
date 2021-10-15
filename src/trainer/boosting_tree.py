@@ -8,6 +8,7 @@ import pandas as pd
 from lightgbm import LGBMRegressor
 from neptune.new.integrations.lightgbm import NeptuneCallback, create_booster_summary
 from sklearn.model_selection import GroupKFold
+from tqdm import tqdm
 
 from utils.utils import LoggerFactory
 
@@ -16,14 +17,26 @@ warnings.filterwarnings("ignore")
 
 
 class ModelResult(NamedTuple):
+    """
+    Save model's training results
+    """
+
     oof_preds: np.ndarray
     preds: Optional[np.ndarray]
     models: Dict[str, any]
     scores: Dict[str, float]
 
 
-class LGBMTrainer:
+class LightGBMTrainer:
+    """Train for LightGBM"""
+
     def __init__(self, n_fold: int, metric: Callable):
+        """
+        Init class
+            Parameter:
+                n_fold: number of folds
+                metric: metric function
+        """
         self.metric = metric
         self.n_fold = n_fold
         self.result = None
@@ -36,19 +49,31 @@ class LGBMTrainer:
         params: Optional[Dict[str, Any]] = None,
         verbose: Union[int, bool] = False,
     ) -> bool:
+        """
+        Train data
+            Parameter:
+                train_x: train dataset
+                train_y: target dataset
+                groups: group fold parameters
+                params: lightgbm' parameters
+                verbose: log lightgbm' training
+            Return:
+                True: Finish Training
+        """
         models = dict()
         scores = dict()
 
         kf = GroupKFold(n_splits=self.n_fold)
         splits = kf.split(train_x, train_y, groups)
         lgb_oof = np.zeros(train_x.shape[0])
+        logger.info(f"Train Shape: {train_x.shape}")
 
         run = neptune.init(
             project="ds-wook/ventilator-pressure", tags=["LightGBM", "GroupKFold"]
         )
 
         for fold, (train_idx, valid_idx) in enumerate(splits, 1):
-            print(f"Fold-{fold} Start!")
+            logger.info(f"Fold-{fold} Start!")
             neptune_callback = NeptuneCallback(run=run, base_namespace=f"fold_{fold}")
 
             # create dataset
@@ -82,6 +107,7 @@ class LGBMTrainer:
                 y_pred=lgb_oof[valid_idx],
                 y_true=y_valid,
             )
+            del X_train, X_valid, y_train, y_valid
 
         oof_score = self.metric(train_y.values, lgb_oof)
         logger.info(f"oof score: {oof_score}")
@@ -98,18 +124,36 @@ class LGBMTrainer:
         return True
 
     def predict(self, test_x: pd.DataFrame) -> np.ndarray:
+        """
+        Predict data
+            Parameter:
+                test_x: test dataset
+            Return:
+                preds: inference prediction
+        """
         folds = self.n_fold
         preds = []
 
-        for fold in range(1, folds + 1):
+        logger.info("Inference Start!")
+        for fold in tqdm(range(1, folds + 1)):
             model = self.result.models[f"fold_{fold}"]
             preds.append(model.predict(test_x))
 
         lgbm_preds = np.median(np.vstack(preds), axis=0)
+        assert len(lgbm_preds) == len(test_x)
+        logger.info("Inference Finish!")
 
         return lgbm_preds
 
     def postprocess(self, train: pd.DataFrame, preds: np.ndarray) -> np.ndarray:
+        """
+        Postprocess data
+            Parameter:
+                train: train dataset
+                preds: inference prediction
+            Return:
+                preds: median prediction
+        """
         all_pressure = np.sort(train.pressure.unique())
         print("The first 25 unique pressures...")
         pressure_min = all_pressure[0].item()

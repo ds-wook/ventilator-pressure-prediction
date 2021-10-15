@@ -12,13 +12,14 @@ def _main(cfg: DictConfig):
     submit_path = to_absolute_path(cfg.submit.path) + "/"
     submission = pd.read_csv(path + "sample_submission.csv")
 
-    lstm1_preds = pd.read_csv(submit_path + "ventilator_lstm_model.csv")
-    lgbm_preds = pd.read_csv(submit_path + "median_stacking_lightgbm.csv")
-    lstm2_preds = pd.read_csv(submit_path + "median_fine_tune_lstm.csv")
+    lstm1_preds = pd.read_csv(submit_path + cfg.dataset.lstm1)
+    lstm2_preds = pd.read_csv(submit_path + cfg.dataset.lstm2)
+    lgbm_preds = pd.read_csv(submit_path + cfg.dataset.lightgbm)
+
     submission["pressure"] = (
         cfg.weight.w1 * lstm1_preds["pressure"]
-        + cfg.weight.w2 * lgbm_preds["pressure"]
-        + cfg.weight.w3 * lstm2_preds["pressure"]
+        + cfg.weight.w2 * lstm2_preds["pressure"]
+        + cfg.weight.w3 * lgbm_preds["pressure"]
     )
 
     print("Postprocessing!")
