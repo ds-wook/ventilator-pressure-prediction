@@ -73,7 +73,6 @@ class LightGBMTrainer:
         )
 
         for fold, (train_idx, valid_idx) in enumerate(splits, 1):
-            logger.info(f"Fold-{fold} Start!")
             neptune_callback = NeptuneCallback(run=run, base_namespace=f"fold_{fold}")
 
             # create dataset

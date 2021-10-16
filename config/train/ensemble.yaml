@@ -1,8 +1,8 @@
 dataset:
   path: ../input/ventilator-pressure-prediction
   lstm1: ventilator_lstm_model.csv
-  lstm2: gb-vpp-lstm.csv
-  lightgbm: median_stacking_lightgbm.csv
+  lstm2: gb-vpp-median-lstm.csv
+  lightgbm: u_out0_stacking.csv
 
 weight:
   w1: 0.333
