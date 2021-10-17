@@ -4,9 +4,8 @@ from hydra.utils import to_absolute_path
 from omegaconf import DictConfig
 from sklearn.metrics import mean_absolute_error
 
-from data.dataset import add_features, bilstm_data
+from data.dataset import load_dataset
 from trainer.boosting_tree import LightGBMTrainer
-from utils.utils import reduce_mem_usage
 
 
 @hydra.main(config_path="../config/train/", config_name="lgbm.yaml")
@@ -17,23 +16,7 @@ def _main(cfg: DictConfig):
     test = pd.read_csv(path + cfg.dataset.test)
     submission = pd.read_csv(path + cfg.dataset.submit)
 
-    train_bilstm = pd.read_csv(path + "lstm_train.csv")
-    test_bilstm = pd.read_csv(path + "lstm_test.csv")
-
-    train = pd.merge(train, train_bilstm, on="id")
-    test = pd.merge(test, test_bilstm, on="id")
-
-    train = bilstm_data(train, cfg.dataset.num)
-    test = bilstm_data(test, cfg.dataset.num)
-    train = reduce_mem_usage(train)
-    test = reduce_mem_usage(test)
-
-    train = add_features(train)
-    test = add_features(test)
-    train = reduce_mem_usage(train)
-    test = reduce_mem_usage(test)
-
-    train = train[train["u_out"] < 1].reset_index(drop=True)
+    train, test = load_dataset(path, train, test, cfg.dataset.num)
 
     columns = [
         col

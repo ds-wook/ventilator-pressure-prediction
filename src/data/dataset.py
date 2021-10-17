@@ -1,4 +1,8 @@
+from typing import Tuple
+
 import pandas as pd
+
+from utils.utils import reduce_mem_usage
 
 
 def add_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -184,3 +188,26 @@ def bilstm_data(
     df = df.fillna(0)
 
     return df
+
+
+def load_dataset(path: str, train: pd.DataFrame, test: pd.DataFrame, num: int) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    train_bilstm = pd.read_csv(path + "lstm_train.csv")
+    test_bilstm = pd.read_csv(path + "lstm_test.csv")
+
+    train = pd.merge(train, train_bilstm, on="id")
+    test = pd.merge(test, test_bilstm, on="id")
+
+    # train = bilstm_data(train, num)
+    # test = bilstm_data(test, num)
+    # train = reduce_mem_usage(train)
+    # test = reduce_mem_usage(test)
+
+    train = add_features(train)
+    test = add_features(test)
+    train = reduce_mem_usage(train)
+    test = reduce_mem_usage(test)
+
+    train = train[train["u_out"] < 1].reset_index(drop=True)
+
+    return train, test
+
