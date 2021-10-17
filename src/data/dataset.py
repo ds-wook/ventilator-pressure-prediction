@@ -210,4 +210,3 @@ def load_dataset(path: str, train: pd.DataFrame, test: pd.DataFrame, num: int) -
     train = train[train["u_out"] < 1].reset_index(drop=True)
 
     return train, test
-

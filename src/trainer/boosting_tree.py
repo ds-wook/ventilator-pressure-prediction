@@ -100,6 +100,7 @@ class LightGBMTrainer:
             logger.info(f"fold {fold}: {score}")
 
             gc.collect()
+
             # Log summary metadata to the same run under the "lgbm_summary" namespace
             run[f"lgbm_summary/fold_{fold}"] = create_booster_summary(
                 booster=model,
