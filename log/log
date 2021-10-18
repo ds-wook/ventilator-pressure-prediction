@@ -21,3 +21,5 @@
 2021-10-18 12:35:39,300 [trainer.boosting_tree|INFO] oof score: 0.08987245393156439
 2021-10-18 12:35:39,301 [trainer.boosting_tree|INFO] Inference Start!
 2021-10-18 13:20:45,877 [trainer.boosting_tree|INFO] Inference Finish!
+2021-10-18 22:57:29,101 [trainer.boosting_tree|INFO] Train Shape: (2290968, 68)
+2021-10-18 23:06:10,670 [trainer.boosting_tree|INFO] fold 1: 0.08766156227119638

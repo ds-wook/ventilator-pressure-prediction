@@ -15,32 +15,32 @@ def _main(cfg: DictConfig):
     train = pd.read_csv(path + cfg.dataset.train)
     test = pd.read_csv(path + cfg.dataset.test)
     submission = pd.read_csv(path + cfg.dataset.submit)
-
+    model_name = list(cfg.model)[0]
     train, test = load_dataset(path, train, test, cfg.dataset.num)
-
-    columns = [
-        col
-        for col in train.columns
-        if col not in ["id", "breath_id", "pressure", "u_out"]
-    ]
-
-    train_x = train[columns]
+    
+    train_x = train[cfg.dataset.feature_names]
     train_y = train[cfg.dataset.target]
-    test_x = test[columns]
+    test_x = test[cfg.dataset.feature_names]
     groups = train[cfg.dataset.groups]
 
-    lgbm_trainer = LightGBMTrainer(cfg.model.fold, mean_absolute_error)
-    lgbm_trainer.train(train_x, train_y, groups, dict(cfg.params), cfg.model.verbose)
-    lgbm_preds = lgbm_trainer.predict(test_x)
-    lgbm_preds = lgbm_trainer.postprocess(train, lgbm_preds)
-    lgbm_oof = lgbm_trainer.result.oof_preds
+    if model_name == "lightgbm":
+        lgbm_trainer = LightGBMTrainer(cfg.model.fold, mean_absolute_error)
+        lgbm_trainer.train(
+            train_x, train_y, groups, cfg.model.lightgbm.params, cfg.model.verbose
+        )
+        lgbm_preds = lgbm_trainer.predict(test_x)
+        lgbm_preds = lgbm_trainer.postprocess(train, lgbm_preds)
+        lgbm_oof = lgbm_trainer.result.oof_preds
 
-    # Save train predictions
-    train["lgbm_preds"] = lgbm_oof
-    train[["id", "lgbm_preds"]].to_csv(path + "stacking_oof.csv", index=False)
-    # Save test predictions
-    submission["pressure"] = lgbm_preds
-    submission.to_csv(submit_path + cfg.submit.name, index=False)
+        # Save train predictions
+        train["lgbm_preds"] = lgbm_oof
+        train[["id", "lgbm_preds"]].to_csv(path + "stacking_oof.csv", index=False)
+        # Save test predictions
+        submission["pressure"] = lgbm_preds
+        submission.to_csv(submit_path + cfg.submit.name, index=False)
+
+    else:
+        raise NotImplementedError
 
 
 if __name__ == "__main__":

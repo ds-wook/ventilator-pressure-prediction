@@ -6,23 +6,97 @@ dataset:
   num: 10
   target: pressure
   groups: breath_id
+  feature_names:
+    [
+      "time_step",
+      "u_in",
+      "pressure0",
+      "pressure1",
+      "pressure2",
+      "pressure3",
+      "pressure4",
+      "pressure5",
+      "pressure6",
+      "pressure7",
+      "pressure8",
+      "pressure9",
+      "area",
+      "cross",
+      "cross2",
+      "u_in_cumsum",
+      "time_step_cumsum",
+      "u_in_1st_derivative",
+      "expand_mean_1sr_der",
+      "u_in_1st_der_mean10",
+      "u_in_lag4",
+      "u_in_lag-4",
+      "time_diff",
+      "power",
+      "power_cumsum",
+      "u_in_lag1",
+      "u_in_lag2",
+      "u_in_lag3",
+      "breath_id__u_in__max",
+      "breath_id__u_in__min",
+      "R_20",
+      "R_5",
+      "R_50",
+      "C_10",
+      "C_20",
+      "C_50",
+      "RC_2010",
+      "RC_2020",
+      "RC_2050",
+      "RC_5010",
+      "RC_5020",
+      "RC_5050",
+      "RC_510",
+      "RC_520",
+      "RC_550",
+      "last_value_u_in",
+      "u_in_lag_back1",
+      "u_in_lag_back2",
+      "u_in_lag_back3",
+      "u_in_diff1",
+      "u_in_diff2",
+      "breath_id__u_in__diffmax",
+      "breath_id__u_in__diffmean",
+      "ewm_u_in_mean",
+      "ewm_u_in_std",
+      "ewm_u_in_corr",
+      "delta_u_in",
+      "delta_u_in_exp",
+      "delta_rolling_10_mean",
+      "delta_rolling_10_max",
+      "work",
+      "work_roll_10",
+      "work_roll_15",
+      "u_in_rol_q0.1",
+      "u_in_rol_q0.25",
+      "u_in_rol_q0.5",
+      "u_in_rol_q0.75",
+      "u_in_rol_q0.9",
+  ]
 
 model:
+  lightgbm:
+    params:
+      n_estimators: 30000
+      boosting_type: gbdt
+      learning_rate: 0.3363649934414201
+      num_leaves: 606
+      objective: mae
+      max_depth: 7
+      max_bin: 781
+      min_child_samples: 37
+      reg_alpha: 0.036210622617823776
+      reg_lambda: 0.06506676052501416
+      n_jobs: -1
+
   fold: 5
   verbose: 1000
 
-params:
-  n_estimators: 30000
-  boosting_type: gbdt
-  learning_rate: 0.3363649934414201
-  num_leaves: 606
-  objective: mae
-  max_depth: 7
-  max_bin: 781
-  min_child_samples: 37
-  reg_alpha: 0.036210622617823776
-  reg_lambda: 0.06506676052501416
-  n_jobs: -1
+
 
 submit:
   path: ../submit
