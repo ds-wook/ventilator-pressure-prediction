@@ -197,7 +197,7 @@ def load_dataset(
     train_bilstm = pd.read_csv(path + "finetuning_lstm_oof.csv")
     test_bilstm = pd.read_csv(path + "finetuning_lstm_pred.csv")
 
-    train["pressure3"] = train_bilstm.flatten()
+    train["pressure3"] = train_bilstm["pressure"]
     test["pressure3"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 

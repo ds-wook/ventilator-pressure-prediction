@@ -9,4 +9,4 @@ optimization:
   params: best_lgbm.yaml
 
 model:
-  fold: 5
+  fold: 10
