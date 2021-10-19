@@ -2,39 +2,51 @@
 import numpy as np
 import pandas as pd
 
-# %%
-train = pd.read_csv("../input/ventilator-pressure-prediction/" + "train.csv")
-# %%
-path = "../submit/"
 
-lstm_oof = np.load(path + "median_lstm_oof.npy")
-
+def reduce_mem_usage(df: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
+    numerics = ["int16", "int32", "int64", "float16", "float32", "float64"]
+    start_mem = df.memory_usage().sum() / 1024 ** 2
+    for col in df.columns:
+        col_type = df[col].dtypes
+        if col_type in numerics:
+            c_min = df[col].min()
+            c_max = df[col].max()
+            if str(col_type)[:3] == "int":
+                if c_min > np.iinfo(np.int8).min and c_max < np.iinfo(np.int8).max:
+                    df[col] = df[col].astype(np.int8)
+                elif c_min > np.iinfo(np.int16).min and c_max < np.iinfo(np.int16).max:
+                    df[col] = df[col].astype(np.int16)
+                elif c_min > np.iinfo(np.int32).min and c_max < np.iinfo(np.int32).max:
+                    df[col] = df[col].astype(np.int32)
+                elif c_min > np.iinfo(np.int64).min and c_max < np.iinfo(np.int64).max:
+                    df[col] = df[col].astype(np.int64)
+            else:
+                if (
+                    c_min > np.finfo(np.float16).min
+                    and c_max < np.finfo(np.float16).max
+                ):
+                    df[col] = df[col].astype(np.float16)
+                elif (
+                    c_min > np.finfo(np.float32).min
+                    and c_max < np.finfo(np.float32).max
+                ):
+                    df[col] = df[col].astype(np.float32)
+                else:
+                    df[col] = df[col].astype(np.float64)
+    end_mem = df.memory_usage().sum() / 1024 ** 2
+    if verbose:
+        print(
+            "Mem. usage decreased to {:5.2f} Mb ({:.1f}% reduction)".format(
+                end_mem, 100 * (start_mem - end_mem) / start_mem
+            )
+        )
+    return df
 # %%
-train.head()
+path = "../input/ventilator-pressure-prediction/"
+oof = pd.read_csv(path + "ventilator-classification-oof.csv")
+oof = reduce_mem_usage(oof)
+oof.head()
 # %%
-train["lstm_pred"] = lstm_oof
-# %%
-train.head()
-# %%
-from sklearn.metrics import mean_absolute_error
-
-mean_absolute_error(train["pressure"], train["lstm_pred"])
-# %%
-train_bilstm = pd.read_csv(
-    "../input/ventilator-pressure-prediction/" + "lstm_train.csv"
-)
-train_bilstm
-# %%
-train_bilstm["pressure10"] = lstm_oof
-train_bilstm.to_csv(
-    "../input/ventilator-pressure-prediction/finetuning_train.csv", index=False
-)
-# %%
-test_bilstm = pd.read_csv("../input/ventilator-pressure-prediction/" + "lstm_test.csv")
-fine_tuning = pd.read_csv(path + "median_lstm_preds.csv")
-test_bilstm["pressure10"] = fine_tuning["pressure"]
-test_bilstm.to_csv(
-    "../input/ventilator-pressure-prediction/finetuning_test.csv", index=False
-)
-
+oof["pressure"] = oof["oof"]
+oof[["id", "pressure"]].to_csv(path + "ventilator-classification-train.csv", index=False)
 # %%

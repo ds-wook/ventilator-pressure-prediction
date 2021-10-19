@@ -3,23 +3,28 @@ dataset:
   test: test.csv
   train: train.csv
   submit: sample_submission.csv
-  num: 10
+  num: 5
   target: pressure
   groups: breath_id
   feature_names:
     [
       "time_step",
       "u_in",
-      "pressure0",
       "pressure1",
+      "pressure1_lag1",
+      "pressure1_lag2",
       "pressure2",
+      "pressure2_lag1",
+      "pressure2_lag2",
       "pressure3",
+      "pressure3_lag1",
+      "pressure3_lag2",
       "pressure4",
+      "pressure4_lag1",
+      "pressure4_lag2",
       "pressure5",
-      "pressure6",
-      "pressure7",
-      "pressure8",
-      "pressure9",
+      "pressure5_lag1",
+      "pressure5_lag2",
       "area",
       "cross",
       "cross2",
@@ -93,8 +98,8 @@ model:
       reg_lambda: 0.06506676052501416
       n_jobs: -1
 
-  fold: 5
-  verbose: 1000
+  fold: 10
+  verbose: 100
 
 
 

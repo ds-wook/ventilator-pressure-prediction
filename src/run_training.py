@@ -17,7 +17,7 @@ def _main(cfg: DictConfig):
     submission = pd.read_csv(path + cfg.dataset.submit)
     model_name = list(cfg.model)[0]
     train, test = load_dataset(path, train, test, cfg.dataset.num)
-    
+
     train_x = train[cfg.dataset.feature_names]
     train_y = train[cfg.dataset.target]
     test_x = test[cfg.dataset.feature_names]

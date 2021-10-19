@@ -1,5 +1,6 @@
 from typing import Tuple
 
+import numpy as np
 import pandas as pd
 
 from utils.utils import reduce_mem_usage
@@ -175,32 +176,59 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def bilstm_data(
-    df: pd.DataFrame, num: int
-) -> pd.DataFrame:
-    df.rename(
-        columns={f"pressure{i}": f"bilstm_pred{i}" for i in range(num)}, inplace=True
-    )
+def bilstm_data(df: pd.DataFrame, num: int) -> pd.DataFrame:
 
-    for i in range(num):
-        df[f"bilstm_pred{i}_lag1"] = df.groupby("breath_id")[f"bilstm_pred{i}"].shift(1)
-        df[f"bilstm_pred{i}_lag2"] = df.groupby("breath_id")[f"bilstm_pred{i}"].shift(2)
+    for i in range(1, num + 1):
+        df[f"pressure{i}_lag1"] = df.groupby("breath_id")[f"pressure{i}"].shift(1)
+        df[f"pressure{i}_lag2"] = df.groupby("breath_id")[f"pressure{i}"].shift(2)
+
     df = df.fillna(0)
 
     return df
 
 
-def load_dataset(path: str, train: pd.DataFrame, test: pd.DataFrame, num: int) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    train_bilstm = pd.read_csv(path + "lstm_train.csv")
-    test_bilstm = pd.read_csv(path + "lstm_test.csv")
+def load_dataset(
+    path: str, train: pd.DataFrame, test: pd.DataFrame, num: int
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    print("make pressure features")
 
-    train = pd.merge(train, train_bilstm, on="id")
-    test = pd.merge(test, test_bilstm, on="id")
+    train_bilstm = pd.read_csv(path + "finetuning_train.csv")
+    test_bilstm = pd.read_csv(path + "finetuning_test.csv")
 
-    # train = bilstm_data(train, num)
-    # test = bilstm_data(test, num)
-    # train = reduce_mem_usage(train)
-    # test = reduce_mem_usage(test)
+    train["pressure1"] = train_bilstm["pressure"]
+    test["pressure1"] = test_bilstm["pressure"]
+    del train_bilstm, test_bilstm
+
+    train_bilstm = pd.read_csv(path + "bilstm_train.csv")
+    test_bilstm = pd.read_csv(path + "bilstm_test.csv")
+
+    train["pressure2"] = train_bilstm["pressure"]
+    test["pressure2"] = test_bilstm["pressure"]
+    del train_bilstm, test_bilstm
+
+    train_bilstm = np.load(path + "finetuning_lstm_oof.npy")
+    test_bilstm = pd.read_csv(path + "finetuning_lstm_pred.csv")
+
+    train["pressure3"] = train_bilstm.flatten()
+    test["pressure3"] = test_bilstm["pressure"]
+    del train_bilstm, test_bilstm
+
+    train_bilstm = pd.read_csv(path + "single_bilstm_train.csv")
+    test_bilstm = pd.read_csv(path + "single_bilstm_test.csv")
+    train["pressure4"] = train_bilstm["pressure"]
+    test["pressure4"] = test_bilstm["pressure"]
+    del train_bilstm, test_bilstm
+
+    train_bilstm = pd.read_csv(path + "ventilator-classification-train.csv")
+    test_bilstm = pd.read_csv(path + "ventilator-classification-test.csv")
+    train["pressure5"] = train_bilstm["pressure"]
+    test["pressure5"] = test_bilstm["pressure"]
+    del train_bilstm, test_bilstm
+
+    train = bilstm_data(train, num)
+    test = bilstm_data(test, num)
+    train = reduce_mem_usage(train)
+    test = reduce_mem_usage(test)
 
     train = add_features(train)
     test = add_features(test)
