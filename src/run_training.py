@@ -16,7 +16,7 @@ def _main(cfg: DictConfig):
     test = pd.read_csv(path + cfg.dataset.test)
     submission = pd.read_csv(path + cfg.dataset.submit)
     model_name = list(cfg.model)[0]
-    train, test = load_dataset(path, train, test, cfg.dataset.num)
+    train, test = load_dataset(path, train, test)
 
     train_x = train[cfg.dataset.feature_names]
     train_y = train[cfg.dataset.target]
@@ -34,7 +34,7 @@ def _main(cfg: DictConfig):
 
         # Save train predictions
         train["lgbm_preds"] = lgbm_oof
-        train[["id", "lgbm_preds"]].to_csv(path + "stacking_oof.csv", index=False)
+        train[["id", "lgbm_preds"]].to_csv(path + cfg.submit.stacking, index=False)
         # Save test predictions
         submission["pressure"] = lgbm_preds
         submission.to_csv(submit_path + cfg.submit.name, index=False)

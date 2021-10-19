@@ -15,7 +15,7 @@ def _main(cfg: DictConfig):
     train = pd.read_csv(path + cfg.dataset.train)
     test = pd.read_csv(path + cfg.dataset.test)
 
-    train, test = load_dataset(path, train, test, cfg.dataset.num)
+    train, test = load_dataset(path, train, test)
     train_x = train[cfg.dataset.feature_names]
     train_y = train[cfg.dataset.target]
     groups = train[cfg.dataset.groups]

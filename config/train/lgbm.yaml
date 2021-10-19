@@ -3,7 +3,6 @@ dataset:
   test: test.csv
   train: train.csv
   submit: sample_submission.csv
-  num: 5
   target: pressure
   groups: breath_id
   feature_names:
@@ -106,3 +105,4 @@ model:
 submit:
   path: ../submit
   name: 5fold_lightgbm.csv
+  stacking: stacking_oof.csv

@@ -141,7 +141,7 @@ class LightGBMTrainer:
 
         lgbm_preds = np.median(np.vstack(preds), axis=0)
         assert len(lgbm_preds) == len(test_x)
-        logger.info("Inference Finish!")
+        logger.info("Inference Finish!\n")
 
         return lgbm_preds
 

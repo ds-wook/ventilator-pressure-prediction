@@ -1,6 +1,5 @@
 from typing import Tuple
 
-import numpy as np
 import pandas as pd
 
 from utils.utils import reduce_mem_usage
@@ -176,19 +175,8 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def bilstm_data(df: pd.DataFrame, num: int) -> pd.DataFrame:
-
-    for i in range(1, num + 1):
-        df[f"pressure{i}_lag1"] = df.groupby("breath_id")[f"pressure{i}"].shift(1)
-        df[f"pressure{i}_lag2"] = df.groupby("breath_id")[f"pressure{i}"].shift(2)
-
-    df = df.fillna(0)
-
-    return df
-
-
 def load_dataset(
-    path: str, train: pd.DataFrame, test: pd.DataFrame, num: int
+    path: str, train: pd.DataFrame, test: pd.DataFrame
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     print("make pressure features")
 
@@ -206,7 +194,7 @@ def load_dataset(
     test["pressure2"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 
-    train_bilstm = np.load(path + "finetuning_lstm_oof.npy")
+    train_bilstm = pd.read_csv(path + "finetuning_lstm_oof.csv")
     test_bilstm = pd.read_csv(path + "finetuning_lstm_pred.csv")
 
     train["pressure3"] = train_bilstm.flatten()
@@ -224,11 +212,6 @@ def load_dataset(
     train["pressure5"] = train_bilstm["pressure"]
     test["pressure5"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
-
-    train = bilstm_data(train, num)
-    test = bilstm_data(test, num)
-    train = reduce_mem_usage(train)
-    test = reduce_mem_usage(test)
 
     train = add_features(train)
     test = add_features(test)
