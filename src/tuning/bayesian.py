@@ -80,11 +80,11 @@ class BayesianOptimizer:
         params["random_state"] = 42
         params["n_jobs"] = -1
 
-        with open(to_absolute_path("../config/train/train.yaml")) as f:
+        with open(to_absolute_path("../../config/train/lgbm.yaml")) as f:
             train_dict = yaml.load(f, Loader=yaml.FullLoader)
-        train_dict["lightgbm"]["params"] = params
+        train_dict["params"] = params
 
-        with open(to_absolute_path("../config/train/" + params_name), "w") as p:
+        with open(to_absolute_path("../../config/train/" + params_name), "w") as p:
             yaml.dump(train_dict, p)
 
 

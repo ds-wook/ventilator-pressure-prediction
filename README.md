@@ -5,7 +5,7 @@ Simulate a ventilator connected to a sedated patient's lung
 ### Benchmark
 |Score|CV|Public LB|private LB|
 |-----|--|------|-------|
-|Stacking-LightGBM(10-GroupKfold)|0.1609|0.1455|-|
+|Stacking-LightGBM(10-GroupKfold)|0.1605|0.1455|-|
 |LSTM(7-Kfold)|0.1620|0.1440|-|
 
 

@@ -3,10 +3,79 @@ dataset:
   test: test.csv
   train: train.csv
   submit: sample_submission.csv
+  target: pressure
+  groups: breath_id
+  feature_names:
+    [
+      "time_step",
+      "u_in",
+      "pressure1",
+      "pressure2",
+      "pressure3",
+      "pressure4",
+      "pressure5",
+      "area",
+      "cross",
+      "cross2",
+      "u_in_cumsum",
+      "time_step_cumsum",
+      "u_in_1st_derivative",
+      "expand_mean_1sr_der",
+      "u_in_1st_der_mean10",
+      "u_in_lag4",
+      "u_in_lag-4",
+      "time_diff",
+      "power",
+      "power_cumsum",
+      "u_in_lag1",
+      "u_in_lag2",
+      "u_in_lag3",
+      "breath_id__u_in__max",
+      "breath_id__u_in__min",
+      "R_20",
+      "R_5",
+      "R_50",
+      "C_10",
+      "C_20",
+      "C_50",
+      "RC_2010",
+      "RC_2020",
+      "RC_2050",
+      "RC_5010",
+      "RC_5020",
+      "RC_5050",
+      "RC_510",
+      "RC_520",
+      "RC_550",
+      "last_value_u_in",
+      "u_in_lag_back1",
+      "u_in_lag_back2",
+      "u_in_lag_back3",
+      "u_in_diff1",
+      "u_in_diff2",
+      "breath_id__u_in__diffmax",
+      "breath_id__u_in__diffmean",
+      "ewm_u_in_mean",
+      "ewm_u_in_std",
+      "ewm_u_in_corr",
+      "delta_u_in",
+      "delta_u_in_exp",
+      "delta_rolling_10_mean",
+      "delta_rolling_10_max",
+      "work",
+      "work_roll_10",
+      "work_roll_15",
+      "u_in_rol_q0.1",
+      "u_in_rol_q0.25",
+      "u_in_rol_q0.5",
+      "u_in_rol_q0.75",
+      "u_in_rol_q0.9",
+  ]
 
 optimization:
   trials: 100
   params: best_lgbm.yaml
+  
 
 model:
   fold: 10

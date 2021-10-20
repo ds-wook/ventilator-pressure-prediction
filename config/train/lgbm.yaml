@@ -14,6 +14,8 @@ dataset:
       "pressure3",
       "pressure4",
       "pressure5",
+      "pressure6",
+      # "pressure7",
       "area",
       "cross",
       "cross2",
@@ -88,7 +90,7 @@ model:
       n_jobs: -1
 
   fold: 10
-  verbose: 100
+  verbose: 1000
 
 
 
