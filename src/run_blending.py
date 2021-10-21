@@ -57,12 +57,16 @@ def _main(cfg: DictConfig):
         test_linear.pressure.values,
     ]
 
-    mean_weight = get_best_weights(oofs, train.pressure.values)
+    best_weights = get_best_weights(oofs, train.pressure.values)
+    best_weights = np.insert(best_weights, len(best_weights), 1 - np.sum(best_weights))
+
+    oof_preds = np.average(oofs, weights=best_weights, axis=1)
+    print(oof_preds)
 
     submit_path = to_absolute_path(cfg.submit.path) + "/"
     submission = pd.read_csv(path + "sample_submission.csv")
 
-    blending_preds = np.average(preds, weights=mean_weight, axis=0)
+    blending_preds = np.average(preds, weights=best_weights, axis=0)
     submission["pressure"] = blending_preds
 
     submission.to_csv(submit_path + cfg.submit.name, index=False)
