@@ -34,7 +34,7 @@ def get_best_weights(oofs: np.ndarray, preds: np.ndarray) -> float:
             get_score,
             weights,
             args=(train_idx, oofs, preds),
-            method="L-BFGS-B",
+            method="SLSQP",
             tol=1e-6,
         )
         logger.info(f"fold: {fold} res.x: {res.x}")
