@@ -90,11 +90,9 @@ model:
       n_jobs: -1
 
   fold: 10
-  verbose: 1000
-
-
+  verbose: 250
 
 submit:
   path: ../submit
-  name: 5fold_lightgbm.csv
-  stacking: stacking_oof.csv
+  name: 10fold_lightgbm.csv
+  stacking: lightgbm_stacking_oof.csv

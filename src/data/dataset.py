@@ -219,10 +219,16 @@ def load_dataset(
     test["pressure6"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 
+    train_bilstm = pd.read_csv(path + "fine-tune-regression-train.csv")
+    test_bilstm = pd.read_csv(path + "fine-tune-regression-test.csv")
+    train["pressure7"] = train_bilstm["pressure"]
+    test["pressure7"] = test_bilstm["pressure"]
+    del train_bilstm, test_bilstm
+
     train_linear = pd.read_csv(path + "automl-train.csv")
     test_linear = pd.read_csv(path + "automl-test.csv")
-    train["pressure7"] = train_linear["pressure"]
-    test["pressure7"] = test_linear["pressure"]
+    train["pressure8"] = train_linear["pressure"]
+    test["pressure8"] = test_linear["pressure"]
     del train_linear, test_linear
 
     train = add_features(train)

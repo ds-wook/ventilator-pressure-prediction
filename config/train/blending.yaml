@@ -1,0 +1,6 @@
+dataset:
+  path: ../input/ventilator-pressure-prediction
+
+submit:
+  path: ../submit
+  name: blending_ensemble.csv
