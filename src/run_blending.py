@@ -13,6 +13,7 @@ def _main(cfg: DictConfig):
     path = to_absolute_path(cfg.dataset.path) + "/"
     submit_path = to_absolute_path(cfg.submit.path) + "/"
     train = pd.read_csv(path + "train.csv")
+    submission = pd.read_csv(path + "sample_submission.csv")
     train = train[train["u_out"] < 1].reset_index(drop=True)
     target = train["pressure"]
     train.drop("pressure", axis=1, inplace=True)
@@ -48,12 +49,10 @@ def _main(cfg: DictConfig):
 
     best_weights = get_best_weights(oofs, target.values)
 
-    oof_preds = np.stack(oofs).T.dot(best_weights)
+    oof_preds = np.average(oofs, weights=best_weights, axis=0)
     print(f"OOF Score: {mean_absolute_error(target, oof_preds)}")
 
-    submission = pd.read_csv(path + "sample_submission.csv")
-
-    blending_preds = np.stack(preds).T.dot(best_weights)
+    blending_preds = np.average(preds, weights=best_weights, axis=0)
     submission["pressure"] = blending_preds
 
     submission.to_csv(submit_path + cfg.submit.name, index=False)

@@ -20,7 +20,9 @@ def get_score(
 
     blending += (1 - np.sum(weights)) * oofs[-1][train_idx]
 
-    return mean_absolute_error(preds[train_idx], blending)
+    scores = mean_absolute_error(preds[train_idx], blending)
+
+    return scores
 
 
 def get_best_weights(oofs: np.ndarray, preds: np.ndarray) -> float:
@@ -34,7 +36,7 @@ def get_best_weights(oofs: np.ndarray, preds: np.ndarray) -> float:
             get_score,
             weights,
             args=(train_idx, oofs, preds),
-            method="SLSQP",
+            method="Nelder-Mead",
             tol=1e-6,
         )
         logger.info(f"fold: {fold} res.x: {res.x}")
