@@ -5,7 +5,7 @@ from hydra.utils import to_absolute_path
 from omegaconf import DictConfig
 
 from optimization.blend import get_best_weights
-
+from sklearn.metrics import mean_absolute_error
 
 @hydra.main(config_path="../config/train/", config_name="blending.yaml")
 def _main(cfg: DictConfig):
@@ -58,15 +58,14 @@ def _main(cfg: DictConfig):
     ]
 
     best_weights = get_best_weights(oofs, train.pressure.values)
-    best_weights = np.insert(best_weights, len(best_weights), 1 - np.sum(best_weights))
 
-    oof_preds = np.average(oofs, weights=best_weights, axis=1)
-    print(oof_preds)
+    oof_preds = np.stack(oofs).T.dot(best_weights)
+    print(f"OOF Score: {mean_absolute_error(train.pressure, oof_preds)}")
 
     submit_path = to_absolute_path(cfg.submit.path) + "/"
     submission = pd.read_csv(path + "sample_submission.csv")
 
-    blending_preds = np.average(preds, weights=best_weights, axis=0)
+    blending_preds = np.stack(preds).T.dot(best_weights)
     submission["pressure"] = blending_preds
 
     submission.to_csv(submit_path + cfg.submit.name, index=False)
