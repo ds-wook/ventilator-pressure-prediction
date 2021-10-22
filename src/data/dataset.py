@@ -180,56 +180,37 @@ def load_dataset(
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     print("make pressure features")
 
-    train_bilstm = pd.read_csv(path + "finetuning_train.csv")
-    test_bilstm = pd.read_csv(path + "finetuning_test.csv")
-
-    train["pressure1"] = train_bilstm["pressure"]
-    test["pressure1"] = test_bilstm["pressure"]
-    del train_bilstm, test_bilstm
-
     train_bilstm = pd.read_csv(path + "bilstm_train.csv")
     test_bilstm = pd.read_csv(path + "bilstm_test.csv")
 
-    train["pressure2"] = train_bilstm["pressure"]
-    test["pressure2"] = test_bilstm["pressure"]
+    train["bilstm_pred"] = train_bilstm["pressure"]
+    test["bilstm_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 
     train_bilstm = pd.read_csv(path + "finetuning_lstm_oof.csv")
     test_bilstm = pd.read_csv(path + "finetuning_lstm_pred.csv")
 
-    train["pressure3"] = train_bilstm["pressure"]
-    test["pressure3"] = test_bilstm["pressure"]
-    del train_bilstm, test_bilstm
-
-    train_bilstm = pd.read_csv(path + "single_bilstm_train.csv")
-    test_bilstm = pd.read_csv(path + "single_bilstm_test.csv")
-    train["pressure4"] = train_bilstm["pressure"]
-    test["pressure4"] = test_bilstm["pressure"]
+    train["finetuning_lstm_pred"] = train_bilstm["pressure"]
+    test["finetuning_lstm_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 
     train_bilstm = pd.read_csv(path + "ventilator-classification-train.csv")
     test_bilstm = pd.read_csv(path + "ventilator-classification-test.csv")
-    train["pressure5"] = train_bilstm["pressure"]
-    test["pressure5"] = test_bilstm["pressure"]
+    train["ventilator_classification_pred"] = train_bilstm["pressure"]
+    test["ventilator_classification_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 
     train_bilstm = pd.read_csv(path + "rescaling_bilstm_train.csv")
     test_bilstm = pd.read_csv(path + "rescaling_bilstm_test.csv")
-    train["pressure6"] = train_bilstm["pressure"]
-    test["pressure6"] = test_bilstm["pressure"]
+    train["rescaling_bilstm_pred"] = train_bilstm["pressure"]
+    test["rescaling_bilstm_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 
     train_bilstm = pd.read_csv(path + "fine-tune-regression-train.csv")
     test_bilstm = pd.read_csv(path + "fine-tune-regression-test.csv")
-    train["pressure7"] = train_bilstm["pressure"]
-    test["pressure7"] = test_bilstm["pressure"]
+    train["finetuning_regression_pred"] = train_bilstm["pressure"]
+    test["finetuning_regression_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
-
-    train_linear = pd.read_csv(path + "automl-train.csv")
-    test_linear = pd.read_csv(path + "automl-test.csv")
-    train["pressure8"] = train_linear["pressure"]
-    test["pressure8"] = test_linear["pressure"]
-    del train_linear, test_linear
 
     train = add_features(train)
     test = add_features(test)

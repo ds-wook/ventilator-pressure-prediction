@@ -16,14 +16,13 @@ def _main(cfg: DictConfig):
     submit_path = to_absolute_path(cfg.submit.path) + "/"
     submission = pd.read_csv(path + "sample_submission.csv")
     lgbm_preds = pd.read_csv(submit_path + cfg.dataset.lightgbm)
-    lstm1_preds = pd.read_csv(submit_path + cfg.dataset.lstm1)
-
-    blend_preds = np.median(
-        np.array([lgbm_preds.pressure.values, lstm1_preds.pressure.values]), axis=0
+    # lstm1_preds = pd.read_csv(submit_path + cfg.dataset.lstm1)
+    ensemble_preds = pd.read_csv(submit_path + cfg.dataset.ensemble)
+    blending_preds = (
+        cfg.weight.w1 * ensemble_preds.pressure + cfg.weight.w1 * lgbm_preds.pressure
     )
-
     print("Postprocess")
-    submission["pressure"] = blend_preds
+    submission["pressure"] = blending_preds
     submission["pressure"] = submission["pressure"].map(
         lambda x: find_nearest(all_pressure, x)
     )
