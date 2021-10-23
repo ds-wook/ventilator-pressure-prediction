@@ -49,9 +49,12 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
         .reset_index(level=0, drop=True)
     )
 
-    df["time_diff"] = df["time_step"] - df["time_step"].shift(1)
+    df["time_diff"] = df["time_step"] - df["time_step"].shift(1).fillna(0)
     df["power"] = df["time_diff"] * df["u_in"]
     df["power_cumsum"] = df.groupby(["breath_id"])["power"].cumsum()
+
+    df["u_in_gap"] = df["u_in"] - df["u_in"].shift(1).fillna(0)
+    df["u_in_rate"] = df["u_in_gap"] / df["time_diff"]
 
     df["u_in_lag1"] = df.groupby("breath_id")["u_in"].shift(1)
     df["u_in_lag2"] = df.groupby("breath_id")["u_in"].shift(2)

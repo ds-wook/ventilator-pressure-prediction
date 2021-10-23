@@ -9,6 +9,8 @@ dataset:
     [
       "time_step",
       "u_in",
+      "u_in_gap",
+      "u_in_rate",
       "bilstm_pred",
       "finetuning_lstm_pred",
       "ventilator_classification_pred",
