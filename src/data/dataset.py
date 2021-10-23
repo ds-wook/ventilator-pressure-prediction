@@ -220,6 +220,4 @@ def load_dataset(
     train = reduce_mem_usage(train)
     test = reduce_mem_usage(test)
 
-    train = train[train["u_out"] < 1].reset_index(drop=True)
-
     return train, test

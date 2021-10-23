@@ -3,12 +3,7 @@ dataset:
   lstm1: pulp_fiction_preds.csv
   lstm2: lstm_resnet_preds.csv
   lightgbm: add_five_lstm_lightgbm_preds.csv
-  ensemble: lb_ensemble.csv
-
-weight:
-  w1: 0.333
-  w2: 0.334
-  w3: 0.333
+  ensemble: ensemble_median.csv
 
 submit:
   path: ../submit
