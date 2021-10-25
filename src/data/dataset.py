@@ -209,10 +209,22 @@ def load_dataset(
     test["rescaling_bilstm_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 
-    train_bilstm = pd.read_csv(path + "fine-tune-regression-train.csv")
-    test_bilstm = pd.read_csv(path + "fine-tune-regression-test.csv")
-    train["finetuning_regression_pred"] = train_bilstm["pressure"]
-    test["finetuning_regression_pred"] = test_bilstm["pressure"]
+    train_bilstm = pd.read_csv(path + "gb-vpp-median-lstm-train.csv")
+    test_bilstm = pd.read_csv(path + "gb-vpp-median-lstm-preds.csv")
+    train["median_pred"] = train_bilstm["pressure"]
+    test["median_pred"] = test_bilstm["pressure"]
+    del train_bilstm, test_bilstm
+
+    train_bilstm = pd.read_csv(path + "hybrid_cnn_train.csv")
+    test_bilstm = pd.read_csv(path + "hybrid_cnn_test.csv")
+    train["cnn_pred"] = train_bilstm["pressure"]
+    test["cnn_pred"] = test_bilstm["pressure"]
+    del train_bilstm, test_bilstm
+
+    train_bilstm = pd.read_csv(path + "single_bilstm_train.csv")
+    test_bilstm = pd.read_csv(path + "single_bilstm_test.csv")
+    train["single_bilstm_pred"] = train_bilstm["pressure"]
+    test["single_bilstm_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 
     train = add_features(train)

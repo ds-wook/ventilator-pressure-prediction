@@ -23,30 +23,17 @@ def _main(cfg: DictConfig):
     lgbm_oofs = pd.read_csv(path + "five_lstm_lightgbm_oof.csv")
     lgbm_preds = pd.read_csv(submit_path + "five_lstm_lightgbm_preds.csv")
 
-    train_bilstm1 = pd.read_csv(path + "finetuning_train.csv")
-    train_bilstm1 = pd.merge(train_bilstm1, train, on="id")
-    test_bilstm1 = pd.read_csv(path + "finetuning_test.csv")
-
-    train_bilstm4 = pd.read_csv(path + "single_bilstm_train.csv")
-    train_bilstm4 = pd.merge(train_bilstm4, train, on="id")
-    test_bilstm4 = pd.read_csv(path + "single_bilstm_test.csv")
-
-    train_cnn = pd.read_csv(path + "hybrid_cnn_train.csv")
-    train_cnn = pd.merge(train_cnn, train, on="id")
-    test_cnn = pd.read_csv(path + "hybrid_cnn_test.csv")
+    train_bilstm = pd.read_csv(path + "gb-vpp-another-lstm-train.csv")
+    test_bilstm = pd.read_csv(path + "gb-vpp-another-lstm-preds.csv")
 
     oofs = [
-        train_bilstm1.pressure.values,
-        train_bilstm4.pressure.values,
-        train_cnn.pressure.values,
         lgbm_oofs.lgbm_preds.values,
+        train_bilstm.pressure.values,
     ]
 
     preds = [
-        test_bilstm1.pressure.values,
-        test_bilstm4.pressure.values,
-        test_cnn.pressure.values,
         lgbm_preds.pressure.values,
+        test_bilstm.pressure.values
     ]
 
     best_weights = get_best_weights(oofs, target.values)

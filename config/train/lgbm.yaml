@@ -11,11 +11,6 @@ dataset:
       "u_in",
       "u_in_gap",
       "u_in_rate",
-      "bilstm_pred",
-      "finetuning_lstm_pred",
-      "ventilator_classification_pred",
-      "rescaling_bilstm_pred",
-      "finetuning_regression_pred",
       "area",
       "cross",
       "cross2",
@@ -72,6 +67,13 @@ dataset:
       "u_in_rol_q0.5",
       "u_in_rol_q0.75",
       "u_in_rol_q0.9",
+      "bilstm_pred",
+      "finetuning_lstm_pred",
+      "ventilator_classification_pred",
+      "rescaling_bilstm_pred",
+      "median_pred",
+      "cnn_pred",
+      "single_bilstm_pred",
   ]
 
 model:

@@ -17,9 +17,7 @@ def _main(cfg: DictConfig):
     submission = pd.read_csv(path + cfg.dataset.submit)
     model_name = list(cfg.model)[0]
     train, test = load_dataset(path, train, test)
-    test["pressure"] = pd.read_csv(submit_path + "pulp_fiction_preds.csv")["pressure"]
 
-    train = pd.concat([train, test], axis=0)
     train = train[train["u_out"] < 1].reset_index(drop=True)
 
     train_x = train[cfg.dataset.feature_names]

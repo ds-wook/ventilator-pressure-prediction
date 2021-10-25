@@ -2,8 +2,9 @@ dataset:
   path: ../input/ventilator-pressure-prediction
   lstm1: pulp_fiction_preds.csv
   lstm2: lstm_resnet_preds.csv
+  lstm3: preds_median_cv_fold_10.csv
+  lstm4: dnn_lstm_preds.csv
   lightgbm: add_five_lstm_lightgbm_preds.csv
-  ensemble: ensemble_median.csv
 
 submit:
   path: ../submit
