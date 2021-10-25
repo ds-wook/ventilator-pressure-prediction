@@ -72,8 +72,6 @@ dataset:
       "ventilator_classification_pred",
       "rescaling_bilstm_pred",
       "median_pred",
-      "cnn_pred",
-      "single_bilstm_pred",
   ]
 
 model:

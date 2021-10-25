@@ -20,20 +20,29 @@ def _main(cfg: DictConfig):
     target = train["pressure"]
     train.drop("pressure", axis=1, inplace=True)
 
-    lgbm_oofs = pd.read_csv(path + "five_lstm_lightgbm_oof.csv")
-    lgbm_preds = pd.read_csv(submit_path + "five_lstm_lightgbm_preds.csv")
+    lgbm_oofs = pd.read_csv(path + "five_lstm_lightgbm_stacking_oof.csv")
+    lgbm_preds = pd.read_csv(submit_path + "five_lstm_lightgbm_stacking_preds.csv")
+    print(f"LightGBM Score: {mean_absolute_error(target, lgbm_oofs.lgbm_preds)}")
 
     train_bilstm = pd.read_csv(path + "gb-vpp-another-lstm-train.csv")
+    train_bilstm = pd.merge(train_bilstm, train, on="id")
     test_bilstm = pd.read_csv(path + "gb-vpp-another-lstm-preds.csv")
+    print(f"LSTM Score: {mean_absolute_error(target, train_bilstm.pressure)}")
+
+    train_cnn = pd.read_csv(path + "hybrid_cnn_train.csv")
+    train_cnn = pd.merge(train_cnn, train, on="id")
+    test_cnn = pd.read_csv(path + "hybrid_cnn_test.csv")
+    print(f"CNN Score: {mean_absolute_error(target, train_cnn.pressure)}")
 
     oofs = [
         lgbm_oofs.lgbm_preds.values,
         train_bilstm.pressure.values,
+        train_cnn.pressure.values,
     ]
-
     preds = [
         lgbm_preds.pressure.values,
-        test_bilstm.pressure.values
+        test_bilstm.pressure.values,
+        test_cnn.pressure.values,
     ]
 
     best_weights = get_best_weights(oofs, target.values)

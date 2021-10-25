@@ -104,4 +104,22 @@
 2021-10-25 23:27:31,313 [trainer.boosting_tree|INFO] fold 15: 0.15808304287493613
 2021-10-25 23:27:32,225 [trainer.boosting_tree|INFO] oof score: 0.15503734551988266
 2021-10-25 23:27:32,226 [trainer.boosting_tree|INFO] Inference Start!
+2021-10-26 00:33:41,829 [optimization.blend|INFO] fold: 4 res.x: [0.66826782]
+2021-10-26 00:33:41,831 [optimization.blend|INFO] optimized weight: [0.66842484 0.33157516]
+
+2021-10-26 00:38:51,186 [optimization.blend|INFO] Blending Start
+2021-10-26 00:38:52,565 [optimization.blend|INFO] fold: 0 res.x: [0.67200012]
+2021-10-26 00:38:53,947 [optimization.blend|INFO] fold: 1 res.x: [0.67085495]
+2021-10-26 00:38:55,303 [optimization.blend|INFO] fold: 2 res.x: [0.66735229]
+2021-10-26 00:38:56,725 [optimization.blend|INFO] fold: 3 res.x: [0.66364899]
+2021-10-26 00:38:58,405 [optimization.blend|INFO] fold: 4 res.x: [0.66826782]
+2021-10-26 00:38:58,409 [optimization.blend|INFO] optimized weight: [0.66842484 0.33157516]
+
+2021-10-26 00:41:25,772 [optimization.blend|INFO] Blending Start
+2021-10-26 00:41:30,201 [optimization.blend|INFO] fold: 0 res.x: [0.63366209 0.30573575]
+2021-10-26 00:41:34,192 [optimization.blend|INFO] fold: 1 res.x: [0.63423295 0.30782462]
+2021-10-26 00:41:38,627 [optimization.blend|INFO] fold: 2 res.x: [0.63319765 0.31341488]
+2021-10-26 00:41:42,636 [optimization.blend|INFO] fold: 3 res.x: [0.62901901 0.31624691]
+2021-10-26 00:41:46,564 [optimization.blend|INFO] fold: 4 res.x: [0.63617003 0.31292669]
+2021-10-26 00:41:46,567 [optimization.blend|INFO] optimized weight: [0.63325635 0.31122977 0.05551388]
 
