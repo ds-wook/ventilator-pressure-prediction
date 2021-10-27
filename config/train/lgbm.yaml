@@ -68,10 +68,15 @@ dataset:
       "u_in_rol_q0.75",
       "u_in_rol_q0.9",
       "bilstm_pred",
+      "another_lstm_pred",
       "finetuning_lstm_pred",
       "ventilator_classification_pred",
       "rescaling_bilstm_pred",
       "median_pred",
+      "regression_pred",
+      "finetuning_pred",
+      "single_bilstm_pred",
+      "cnn_pred",
   ]
 
 model:

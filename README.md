@@ -13,8 +13,7 @@ Simulate a ventilator connected to a sedated patient's lung
 |Bidirect-LSTM6|0.16934|0.1577|-|
 |Regression|0.1764|0.1658|-|
 |LightAutoML-liner|0.1756|0.1610|-|
-|Stacking-LightGBM(15-GroupKfold)|0.1558|0.1452|-|
-|Weighted-Ensemble|0.1509|0.1443|-|
+|Stacking-LightGBM(15-GroupKfold)|0.1548|0.1399|-|
 |LSTM(7-Kfold)|0.1620|0.1440|-|
 
 

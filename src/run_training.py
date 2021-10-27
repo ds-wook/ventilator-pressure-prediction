@@ -32,11 +32,7 @@ def _main(cfg: DictConfig):
         )
         lgbm_preds = lgbm_trainer.predict(test_x)
         lgbm_preds = lgbm_trainer.postprocess(train, lgbm_preds)
-        lgbm_oof = lgbm_trainer.result.oof_preds
 
-        # Save train predictions
-        train["lgbm_preds"] = lgbm_oof
-        train[["id", "lgbm_preds"]].to_csv(path + cfg.submit.stacking, index=False)
         # Save test predictions
         submission["pressure"] = lgbm_preds
         submission.to_csv(submit_path + cfg.submit.name, index=False)

@@ -197,6 +197,13 @@ def load_dataset(
     test["finetuning_lstm_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 
+    train_bilstm = pd.read_csv(path + "gb-vpp-another-lstm-train.csv")
+    test_bilstm = pd.read_csv(path + "gb-vpp-another-lstm-preds.csv")
+
+    train["another_lstm_pred"] = train_bilstm["pressure"]
+    test["another_lstm_pred"] = test_bilstm["pressure"]
+    del train_bilstm, test_bilstm
+
     train_bilstm = pd.read_csv(path + "ventilator-classification-train.csv")
     test_bilstm = pd.read_csv(path + "ventilator-classification-test.csv")
     train["ventilator_classification_pred"] = train_bilstm["pressure"]
@@ -208,12 +215,18 @@ def load_dataset(
     train["rescaling_bilstm_pred"] = train_bilstm["pressure"]
     test["rescaling_bilstm_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
-
+    
     train_bilstm = pd.read_csv(path + "gb-vpp-median-lstm-train.csv")
     test_bilstm = pd.read_csv(path + "gb-vpp-median-lstm-preds.csv")
     train["median_pred"] = train_bilstm["pressure"]
     test["median_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
+
+    train_cnn = pd.read_csv(path + "hybrid_cnn_train.csv")
+    test_cnn = pd.read_csv(path + "hybrid_cnn_test.csv")
+    train["cnn_pred"] = train_cnn["pressure"]
+    test["cnn_pred"] = test_cnn["pressure"]
+    del train_cnn, test_cnn
 
     train = add_features(train)
     test = add_features(test)

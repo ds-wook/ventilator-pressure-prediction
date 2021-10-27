@@ -123,3 +123,22 @@
 2021-10-26 00:41:46,564 [optimization.blend|INFO] fold: 4 res.x: [0.63617003 0.31292669]
 2021-10-26 00:41:46,567 [optimization.blend|INFO] optimized weight: [0.63325635 0.31122977 0.05551388]
 
+2021-10-26 09:19:10,082 [trainer.boosting_tree|INFO] Train Shape: (2290968, 67)
+2021-10-26 09:22:31,275 [trainer.boosting_tree|INFO] fold 1: 0.15658543676574263
+2021-10-26 09:26:34,188 [trainer.boosting_tree|INFO] fold 2: 0.14988478767655017
+2021-10-26 09:30:03,976 [trainer.boosting_tree|INFO] fold 3: 0.15803663470227758
+2021-10-26 09:33:55,132 [trainer.boosting_tree|INFO] fold 4: 0.14688406481327546
+2021-10-26 09:37:10,651 [trainer.boosting_tree|INFO] fold 5: 0.15294395711662312
+2021-10-26 09:42:01,301 [trainer.boosting_tree|INFO] fold 6: 0.15105972981107088
+2021-10-26 09:46:10,593 [trainer.boosting_tree|INFO] fold 7: 0.15288996910751243
+2021-10-26 09:50:13,085 [trainer.boosting_tree|INFO] fold 8: 0.15451039796750363
+2021-10-26 09:53:52,246 [trainer.boosting_tree|INFO] fold 9: 0.15356519830701995
+2021-10-26 09:57:54,759 [trainer.boosting_tree|INFO] fold 10: 0.16002776243839306
+2021-10-26 10:01:46,693 [trainer.boosting_tree|INFO] fold 11: 0.15466621886814744
+2021-10-26 10:05:23,130 [trainer.boosting_tree|INFO] fold 12: 0.1534502463995901
+2021-10-26 10:08:00,693 [trainer.boosting_tree|INFO] fold 13: 0.1625938370273831
+2021-10-26 10:11:23,259 [trainer.boosting_tree|INFO] fold 14: 0.15746404777495768
+2021-10-26 10:14:42,760 [trainer.boosting_tree|INFO] fold 15: 0.15892643932626416
+2021-10-26 10:14:43,690 [trainer.boosting_tree|INFO] oof score: 0.15489925105602412
+2021-10-26 10:14:43,692 [trainer.boosting_tree|INFO] Inference Start!
+2021-10-26 10:42:03,105 [trainer.boosting_tree|INFO] Inference Finish!
