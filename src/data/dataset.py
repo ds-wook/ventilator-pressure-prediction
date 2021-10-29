@@ -215,18 +215,18 @@ def load_dataset(
     train["rescaling_bilstm_pred"] = train_bilstm["pressure"]
     test["rescaling_bilstm_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
-    
+
     train_bilstm = pd.read_csv(path + "gb-vpp-median-lstm-train.csv")
     test_bilstm = pd.read_csv(path + "gb-vpp-median-lstm-preds.csv")
     train["median_pred"] = train_bilstm["pressure"]
     test["median_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 
-    train_cnn = pd.read_csv(path + "hybrid_cnn_train.csv")
-    test_cnn = pd.read_csv(path + "hybrid_cnn_test.csv")
-    train["cnn_pred"] = train_cnn["pressure"]
-    test["cnn_pred"] = test_cnn["pressure"]
-    del train_cnn, test_cnn
+    train_resnet = pd.read_csv(path + "lstm_resnet_train.csv")
+    test_resnet = pd.read_csv(path + "lstm_resnet_test.csv")
+    train["resnet_pred"] = train_resnet["pressure"]
+    test["resnet_pred"] = test_resnet["pressure"]
+    del train_resnet, test_resnet
 
     train = add_features(train)
     test = add_features(test)

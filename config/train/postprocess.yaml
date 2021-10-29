@@ -1,10 +1,10 @@
 dataset:
   path: ../input/ventilator-pressure-prediction
-  lightgbm: seven_model_lightgbm_preds.csv
+  lightgbm: resnet_lstm_lightgbm_preds.csv
   lstm1: pulp_fiction_preds.csv
-  lstm2: lstm_resnet_preds.csv
-  lstm3: dnn_lstm_preds.csv
-  lstm4: ver9_lstm_preds.csv
+  lstm2: dnn_lstm_preds.csv
+  lstm3: ver10_lstm_preds.csv
+  lstm4: lstm_resnet_preds.csv
 
 submit:
   path: ../submit
