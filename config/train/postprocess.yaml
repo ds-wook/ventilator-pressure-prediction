@@ -5,6 +5,7 @@ dataset:
   lstm2: dnn_lstm_preds.csv
   lstm3: ver10_lstm_preds.csv
   lstm4: lstm_resnet_preds.csv
+  lstm5: pulp_fiction_preds2.csv
 
 submit:
   path: ../submit
