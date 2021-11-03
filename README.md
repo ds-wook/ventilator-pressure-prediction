@@ -7,7 +7,7 @@ This repository is the code that [Google Brain - Ventilator Pressure Prediction]
 [Learning Visualization](https://app.neptune.ai/ds-wook/ventilator-pressure/experiments?split=bth&dash=charts&viewId=standard-view)
 
 ### Model Architecture
-
+![competition-model](https://user-images.githubusercontent.com/46340424/140233073-6f876ebb-ac66-4e28-a9f1-b27e08a15443.png)
 
 ### Benchmark
 |Score|CV|Public LB|private LB|
