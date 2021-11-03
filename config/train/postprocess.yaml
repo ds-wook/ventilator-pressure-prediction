@@ -7,7 +7,7 @@ dataset:
   lstm4: lstm_resnet_preds.csv
   lstm5: pulp_fiction_preds2.csv
   lstm6: ver10_lstm_preds.csv
-
+  ensemble: lb_ensemble.csv
 
 submit:
   path: ../submit

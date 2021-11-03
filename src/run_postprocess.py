@@ -18,7 +18,7 @@ def _main(cfg: DictConfig):
     lstm4_preds = pd.read_csv(submit_path + cfg.dataset.lstm4)
     lstm5_preds = pd.read_csv(submit_path + cfg.dataset.lstm5)
     lstm6_preds = pd.read_csv(submit_path + cfg.dataset.lstm6)
-    ensemble_preds = pd.read_csv(submit_path + "lb_ensemble.csv")
+    ensemble_preds = pd.read_csv(submit_path + cfg.dataset.ensemble)
 
     blending_preds = np.median(
         [
