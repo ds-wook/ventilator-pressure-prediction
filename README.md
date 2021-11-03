@@ -1,11 +1,18 @@
 # ventilator-pressure-prediction
-Simulate a ventilator connected to a sedated patient's lung
+
+### Introduction
+This repository is the code that [Google Brain - Ventilator Pressure Prediction](https://www.kaggle.com/c/ventilator-pressure-prediction) competition.
+
+### Learning Process
+[Learning Visualization](https://app.neptune.ai/ds-wook/ventilator-pressure/experiments?split=bth&dash=charts&viewId=standard-view)
+
+### Model Architecture
 
 
 ### Benchmark
 |Score|CV|Public LB|private LB|
 |-----|--|------|-------|
-|Bidirect-LSTM1|0.1740|0.1618|-|
+|Bidirect-LSTM1|0.1740|0.1618|-
 |Bidirect-LSTM2|0.1693|0.1577|-|
 |Bidirect-LSTM3|0.1693|0.1530|-|
 |Bidirect-LSTM4|0.1714|0.1652|-|
@@ -26,8 +33,6 @@ Simulate a ventilator connected to a sedated patient's lung
 + optuna
 + neptune.ai
 + hydra
-+ pytorch-tabnet
-+ pytorch
 + tensorflow 2.0
 
 
