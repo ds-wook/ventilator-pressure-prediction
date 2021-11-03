@@ -1,7 +1,7 @@
 dataset:
   path: ../input/ventilator-pressure-prediction
-  test: test_knn.csv
-  train: train_knn.csv
+  test: test.csv
+  train: train.csv
   submit: sample_submission.csv
   target: pressure
   groups: breath_id
@@ -73,8 +73,8 @@ dataset:
       "ventilator_classification_pred",
       "rescaling_bilstm_pred",
       "median_pred",
-      "cnn_pred",
-      "u_in_knn",
+      "dnn_pred",
+      "resnet_pred",
   ]
 
 model:

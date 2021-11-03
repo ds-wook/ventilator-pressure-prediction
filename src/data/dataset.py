@@ -222,6 +222,12 @@ def load_dataset(
     test["median_pred"] = test_bilstm["pressure"]
     del train_bilstm, test_bilstm
 
+    train_bilstm = pd.read_csv(path + "dnn_lstm_train.csv")
+    test_bilstm = pd.read_csv(path + "dnn_lstm_preds.csv")
+    train["dnn_pred"] = train_bilstm["pressure"]
+    test["dnn_pred"] = test_bilstm["pressure"]
+    del train_bilstm, test_bilstm
+
     train_resnet = pd.read_csv(path + "lstm_resnet_train.csv")
     test_resnet = pd.read_csv(path + "lstm_resnet_test.csv")
     train["resnet_pred"] = train_resnet["pressure"]
