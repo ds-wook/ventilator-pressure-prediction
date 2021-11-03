@@ -20,6 +20,8 @@ This repository is the code that [Google Brain - Ventilator Pressure Prediction]
 |Bidirect-LSTM6|0.16934|0.1577|-|
 |Regression|0.1764|0.1658|-|
 |LightAutoML-liner|0.1756|0.1610|-|
+|Resnet-LSTM|0.1601|0.1405|-|
+|DNN-LSTM|0.1563|0.1385|-|
 |Stacking-LightGBM(15-GroupKfold)|**0.1521**|**0.1365**|-|
 |LSTM(7-Kfold)|0.1620|0.1440|-|
 
