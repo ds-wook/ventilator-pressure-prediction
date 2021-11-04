@@ -7,7 +7,7 @@ This repository is the code that placed 176th [Google Brain - Ventilator Pressur
 [Learning Visualization](https://app.neptune.ai/ds-wook/ventilator-pressure/experiments?split=bth&dash=charts&viewId=standard-view)
 
 ### Model Architecture
-![competition-model](https://user-images.githubusercontent.com/46340424/140233073-6f876ebb-ac66-4e28-a9f1-b27e08a15443.png)
+![competition-model](https://user-images.githubusercontent.com/46340424/140250859-3b96c624-27a1-40d1-8065-3327f5cf7f48.png)
 
 ### Benchmark
 |Score|CV|Public LB|private LB|
@@ -31,7 +31,6 @@ This repository is the code that placed 176th [Google Brain - Ventilator Pressur
 + pandas
 + scikit-learn
 + lightgbm
-+ xgboost
 + optuna
 + neptune.ai
 + hydra
