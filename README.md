@@ -12,18 +12,18 @@ This repository is the code that placed 176th [Google Brain - Ventilator Pressur
 ### Benchmark
 |Score|CV|Public LB|private LB|
 |-----|--|------|-------|
-|Bidirect-LSTM1|0.1740|0.1618|-
+|Bidirect-LSTM1|0.1740|0.1618|-|
 |Bidirect-LSTM2|0.1693|0.1577|-|
 |Bidirect-LSTM3|0.1693|0.1530|-|
 |Bidirect-LSTM4|0.1714|0.1652|-|
 |Bidirect-LSTM5|0.16884|0.1575|-|
 |Bidirect-LSTM6|0.16934|0.1577|-|
 |Regression|0.1764|0.1658|-|
-|LightAutoML-liner|0.1756|0.1610|-|
-|Resnet-LSTM|0.1601|0.1405|-|
-|DNN-LSTM|0.1563|0.1385|-|
-|Stacking-LightGBM(15-GroupKfold)|**0.1521**|**0.1365**|-|
-|LSTM(7-Kfold)|0.1620|0.1440|-|
+|LightAutoML-liner|0.1756|0.1641|0.1671|
+|Resnet-LSTM|0.1601|0.1405|0.1416|
+|DNN-LSTM|0.1563|0.1385|0.1414|
+|Stacking-LightGBM(15-GroupKfold)|**0.1521**|**0.1365**|**0.1386**|
+|LSTM(10-Kfold)|0.1620|0.1456|0.1475|
 
 
 ### Requirements
