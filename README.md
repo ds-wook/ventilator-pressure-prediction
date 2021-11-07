@@ -10,7 +10,7 @@ This repository is the code that placed 176th [Google Brain - Ventilator Pressur
 ![competition-model](https://user-images.githubusercontent.com/46340424/140250859-3b96c624-27a1-40d1-8065-3327f5cf7f48.png)
 
 ### Benchmark
-|Score|CV|Public LB|private LB|
+|Score|CV|Public LB|Private LB|
 |-----|--|------|-------|
 |LightAutoML-liner|0.1756|0.1641|0.1671|
 |Resnet-LSTM|0.1601|0.1405|0.1416|
