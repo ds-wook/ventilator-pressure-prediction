@@ -1,7 +1,7 @@
 # ventilator-pressure-prediction
 
 ### Introduction
-This repository is the code that placed 176th [Google Brain - Ventilator Pressure Prediction](https://www.kaggle.com/c/ventilator-pressure-prediction) competition.
+This repository is the code that placed 171st [Google Brain - Ventilator Pressure Prediction](https://www.kaggle.com/c/ventilator-pressure-prediction) competition.
 
 ### Learning Process
 [Learning Visualization](https://app.neptune.ai/ds-wook/ventilator-pressure/experiments?split=bth&dash=charts&viewId=standard-view)
