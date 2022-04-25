@@ -127,8 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-input/
+input/*
+!input/.gitkeep
 .vscode/
-submit/
+output/*
+!output/.gitkeep
 outputs/
 submit/

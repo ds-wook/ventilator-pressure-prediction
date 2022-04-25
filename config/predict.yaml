@@ -1,3 +1,7 @@
+hydra:
+  run:
+    dir: ../log/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  output_subdir: null
 dataset:
   path: ../input/ventilator-pressure-prediction
   test: test.csv
@@ -5,15 +9,12 @@ dataset:
   submit: sample_submission.csv
   target: pressure
   groups: breath_id
-  feature_names:
+  features:
     [
       "time_step",
       "u_in",
-      "pressure1",
-      "pressure2",
-      "pressure3",
-      "pressure4",
-      "pressure5",
+      "u_in_gap",
+      "u_in_rate",
       "area",
       "cross",
       "cross2",
@@ -76,17 +77,12 @@ dataset:
       "ventilator_classification_pred",
       "rescaling_bilstm_pred",
       "median_pred",
-      "regression_pred",
-      "finetuning_pred",
-      "single_bilstm_pred",
-      "cnn_pred",
+      "dnn_pred",
       "resnet_pred",
   ]
-
-optimization:
-  trials: 100
-  params: best_lgbm.yaml
-  
-
 model:
-  fold: 15
+  lightgbm: res/models/10fold_lightgbm_kfold.csv
+output:
+  path: ../submit
+  name: 10fold_lightgbm.csv
+  stacking: lightgbm_stacking_oof.csv
