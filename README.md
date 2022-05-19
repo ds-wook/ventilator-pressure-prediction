@@ -3,9 +3,6 @@
 ### Introduction
 This repository is the code that placed 171st [Google Brain - Ventilator Pressure Prediction](https://www.kaggle.com/c/ventilator-pressure-prediction) competition.
 
-### Learning Process
-[Learning Visualization](https://app.neptune.ai/ds-wook/ventilator-pressure/experiments?split=bth&dash=charts&viewId=standard-view)
-
 ### Model Architecture
 ![competition-model](https://user-images.githubusercontent.com/46340424/140250859-3b96c624-27a1-40d1-8065-3327f5cf7f48.png)
 
