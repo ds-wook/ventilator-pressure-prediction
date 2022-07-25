@@ -13,7 +13,7 @@ def _main(cfg: DictConfig):
     path = to_absolute_path(cfg.dataset.path) + "/"
     submit_path = to_absolute_path(cfg.submit.path) + "/"
     submission = pd.read_csv(path + cfg.dataset.submit)
-    train = pd.read_csV(path + cfg.dataset.train)
+    train = pd.read_csv(path + cfg.dataset.train)
     test_x = load_test_dataset(cfg)
 
     lgbm_trainer = load_model(cfg.model.lightgbm)
